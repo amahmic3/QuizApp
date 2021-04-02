@@ -40,6 +40,10 @@
         "source": "C:\\Users\\Adnan\\Desktop\\RMA_Spirala\\app\\src\\main\\res\\layout\\activity_main.xml"
     },
     {
+        "merged": "C:\\Users\\Adnan\\Desktop\\RMA_Spirala\\app\\build\\intermediates\\res\\merged\\debug\\layout_activity_upis_predmet.xml.flat",
+        "source": "C:\\Users\\Adnan\\Desktop\\RMA_Spirala\\app\\src\\main\\res\\layout\\activity_upis_predmet.xml"
+    },
+    {
         "merged": "C:\\Users\\Adnan\\Desktop\\RMA_Spirala\\app\\build\\intermediates\\res\\merged\\debug\\drawable-v24_ic_launcher_foreground.xml.flat",
         "source": "C:\\Users\\Adnan\\Desktop\\RMA_Spirala\\app\\src\\main\\res\\drawable-v24\\ic_launcher_foreground.xml"
     },

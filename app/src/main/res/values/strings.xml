@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">rma21projekat</string>
+    <string name="godina">Godina: </string>
+    <string name="predmet">Predmet: </string>
+    <string name="grupa">Grupa: </string>
+    <string name="upisDugme">Upiši me</string>
 </resources>

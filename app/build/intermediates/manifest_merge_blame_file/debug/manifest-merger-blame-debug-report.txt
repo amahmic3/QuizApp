@@ -11,7 +11,7 @@
 9-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml
 10
 11    <application
-11-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:5:5-18:19
+11-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:5:5-20:19
 12        android:allowBackup="true"
 12-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:6:9-35
 13        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
@@ -29,20 +29,23 @@
 20        android:testOnly="true"
 21        android:theme="@style/Theme.Rma21projekat" >
 21-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:11:9-51
-22        <activity android:name="ba.etf.rma21.projekat.MainActivity" >
-22-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:12:9-17:20
-22-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:12:19-47
-23            <intent-filter>
-23-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:13:13-16:29
-24                <action android:name="android.intent.action.MAIN" />
-24-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:14:17-69
-24-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:14:25-66
-25
-26                <category android:name="android.intent.category.LAUNCHER" />
-26-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:15:17-77
-26-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:15:27-74
-27            </intent-filter>
-28        </activity>
-29    </application>
-30
-31</manifest>
+22        <activity android:name="ba.etf.rma21.projekat.UpisPredmet" />
+22-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:12:9-58
+22-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:12:19-46
+23        <activity android:name="ba.etf.rma21.projekat.MainActivity" >
+23-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:13:9-19:20
+23-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:13:19-47
+24            <intent-filter>
+24-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:14:13-18:29
+25                <action android:name="android.intent.action.MAIN" />
+25-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:15:17-69
+25-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:15:25-66
+26
+27                <category android:name="android.intent.category.LAUNCHER" />
+27-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:17:17-77
+27-->C:\Users\Adnan\Desktop\RMA_Spirala\app\src\main\AndroidManifest.xml:17:27-74
+28            </intent-filter>
+29        </activity>
+30    </application>
+31
+32</manifest>
