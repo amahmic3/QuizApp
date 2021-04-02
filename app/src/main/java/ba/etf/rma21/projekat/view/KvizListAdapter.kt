@@ -12,7 +12,7 @@ import ba.etf.rma21.projekat.data.models.Kviz
 import java.util.*
 
 @Suppress("DEPRECATION")
-class KvizListAdapter(private var kvizovi: List<Kviz>):RecyclerView.Adapter<KvizListAdapter.KvizViewHolder>() {
+class KvizListAdapter(var kvizovi: List<Kviz>):RecyclerView.Adapter<KvizListAdapter.KvizViewHolder>() {
     private lateinit var trenutniDatum :Date;
 
     inner class KvizViewHolder(itemView:View):RecyclerView.ViewHolder(itemView) {

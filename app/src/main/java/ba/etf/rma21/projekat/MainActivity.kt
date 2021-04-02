@@ -7,42 +7,66 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import ba.etf.rma21.projekat.data.models.Kviz
-import ba.etf.rma21.projekat.data.static.dajFiltere
 import ba.etf.rma21.projekat.view.KvizListAdapter
+import ba.etf.rma21.projekat.viewmodel.GrupaViewModel
+import ba.etf.rma21.projekat.viewmodel.KvizViewModel
+import ba.etf.rma21.projekat.viewmodel.PredmetViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
 
-    var kvizovi:MutableList<Kviz> = mutableListOf(Kviz("Kviz 0","RMA",Date(2020,1,1),Date(2021,5,1),Date(),5,"RI",5.2F),
-        Kviz("Kviz 1","IM2",Date(2021,1,1),Date(2021,5,1),Date(),5,"RI",5F));
 
-    private lateinit var kvizkovi:RecyclerView;
-    private lateinit var kviskoAdapter:KvizListAdapter;
-    private lateinit var filter:Spinner;
+    private lateinit var kvizovi: RecyclerView;
+    private lateinit var kvizAdapter: KvizListAdapter;
+    private lateinit var filter: Spinner;
     private lateinit var upisPredmeta: FloatingActionButton;
+    private var godina: String = "1";
+    private var kvizViewModel = KvizViewModel()
+    private var predmetViewModel = PredmetViewModel()
+    private var grupaViewModel = GrupaViewModel();
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        kvizovi.sortWith(Comparator { k1: Kviz, k2: Kviz -> -k1.datumPocetka.compareTo(k2.datumPocetka) });
-        filter = findViewById(R.id.filterKvizova);
-        upisPredmeta = findViewById(R.id.upisDugme);
+
+        filter = findViewById(R.id.filterKvizova)
+        upisPredmeta = findViewById(R.id.upisDugme)
+        kvizovi = findViewById(R.id.listaKvizova)
+        kvizovi.layoutManager = GridLayoutManager(this,2);
+        kvizAdapter = KvizListAdapter(kvizViewModel.dajKvizoveZaKorisnika())
+        kvizovi.adapter = kvizAdapter
+
         upisPredmeta.setOnClickListener {
             upisiPredmet();
         }
-        filter.adapter = ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, dajFiltere());
-        filter.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+        filter.adapter = ArrayAdapter<String>(
+            this,
+            android.R.layout.simple_list_item_1,
+            listOf(
+                "Svi moji kvizovi",
+                "Svi kvizovi",
+                "Urađeni kvizovi",
+                "Budući kvizovi",
+                "Prošli kvizovi"
+            )
+        );
+        filter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
                 id: Long
             ) {
-
+                when (position) {
+                    0 -> kvizAdapter.kvizovi = (kvizViewModel.dajKvizoveZaKorisnika())
+                    1 -> kvizAdapter.kvizovi = (kvizViewModel.dajSveKvizove())
+                    2 -> kvizAdapter.kvizovi = (kvizViewModel.dajUrađeneKvizove())
+                    3 -> kvizAdapter.kvizovi = (kvizViewModel.dajBuduceKvizove())
+                    4 -> kvizAdapter.kvizovi = (kvizViewModel.dajProsleKvizove())
+                }
+                kvizovi.adapter?.notifyDataSetChanged()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -50,16 +74,29 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
-        kvizkovi=findViewById(R.id.listaKvizova);
-        kvizkovi.layoutManager = LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
-        kviskoAdapter = KvizListAdapter(kvizovi);
-        kvizkovi.adapter=kviskoAdapter;
+
     }
 
     private fun upisiPredmet() {
-        val intent = Intent(this,UpisPredmet::class.java)
+        val intent = Intent(this, UpisPredmet::class.java)
+        intent.putExtra("godina", godina)
         startActivity(intent)
     }
+
+    override fun onResume() {
+        super.onResume()
+        if(intent.getBundleExtra("upisPredmeta")!=null){
+            val bundle = intent.getBundleExtra("upisPredmeta")
+            godina = bundle?.getString("godina").toString()
+            val predmet = bundle?.getString("predmet")
+            val grupa = bundle?.getString("grupa")
+            predmetViewModel.upisiPredmet(predmet!!,godina.toInt())
+            grupaViewModel.upisiUGrupu(grupa!!,predmet)
+            kvizovi.adapter?.notifyDataSetChanged()
+            kvizovi.adapter?.notifyDataSetChanged()
+           intent.removeExtra("upisPredmeta")
+        }
+  }
 
 
 }

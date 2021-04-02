@@ -1,39 +1,41 @@
 package ba.etf.rma21.projekat.data.repositories
 
+import ba.etf.rma21.projekat.data.models.Grupa
 import ba.etf.rma21.projekat.data.models.Kviz
+import ba.etf.rma21.projekat.data.models.Predmet
+import ba.etf.rma21.projekat.data.static.dajKvizove
+import java.util.*
+import java.util.stream.Collectors
 
 class KvizRepository {
 
     companion object {
-        // TODO: Implementirati
+        private var kvizovi:MutableList<Kviz> = mutableListOf();
         init {
-            // TODO: Implementirati
+           kvizovi.addAll(dajKvizove())
         }
 
         fun getMyKvizes(): List<Kviz> {
-            // TODO: Implementirati
-            return emptyList()
+            val mojiPredmeti = PredmetRepository.getUpisani().stream().map({p:Predmet -> p.toString()}).collect(Collectors.toList())
+            val mojeGrupe = GrupaRepository.dajUpisaneGrupe().stream().map { grupa: Grupa? -> grupa?.toString() }.collect(Collectors.toList())
+            return kvizovi.stream().filter({k:Kviz -> mojiPredmeti.contains(k.nazivPredmeta)}).filter{kviz: Kviz ->  mojeGrupe.contains(kviz.nazivGrupe)}.collect(Collectors.toList());
         }
 
         fun getAll(): List<Kviz> {
-            // TODO: Implementirati
-            return emptyList()
+            return kvizovi
         }
 
         fun getDone(): List<Kviz> {
-            // TODO: Implementirati
-            return emptyList()
+            return getMyKvizes().stream().filter({k:Kviz -> k.datumRada!=null}).collect(Collectors.toList())
         }
 
         fun getFuture(): List<Kviz> {
-            // TODO: Implementirati
-            return emptyList()
+            return getMyKvizes().stream().filter({k:Kviz -> k.datumRada==null && k.datumPocetka.after(Date())}).collect(Collectors.toList())
         }
 
         fun getNotTaken(): List<Kviz> {
-            // TODO: Implementirati
-            return emptyList()
+            return getMyKvizes().stream().filter({k: Kviz -> k.datumRada==null && k.datumKraj.before(Date())}).collect(Collectors.toList());
         }
-        // TODO: Implementirati i ostale potrebne metode
+
     }
 }
