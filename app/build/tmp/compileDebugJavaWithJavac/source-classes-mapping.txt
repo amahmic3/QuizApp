@@ -1,2 +1,0 @@
-ba/etf/rma21/projekat/BuildConfig.java
- ba.etf.rma21.projekat.BuildConfig
