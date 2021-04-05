@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isEmpty
+import androidx.core.view.isNotEmpty
 import androidx.core.view.isVisible
 import ba.etf.rma21.projekat.viewmodel.GrupaViewModel
 import ba.etf.rma21.projekat.viewmodel.PredmetViewModel
@@ -39,7 +41,7 @@ class UpisPredmet : AppCompatActivity() {
             ) {
                 godina= position+1;
                 spinnerPredmeti.adapter = ArrayAdapter(this@UpisPredmet,android.R.layout.simple_list_item_1, predmetViewModel.dajNeUpisanePredmete(godina));
-
+                if(spinnerPredmeti.adapter.isEmpty) upis.isVisible=false
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 upis.isVisible = false;
@@ -54,6 +56,7 @@ class UpisPredmet : AppCompatActivity() {
                 id: Long
             ) {
                 spinnerGrupe.adapter = ArrayAdapter(this@UpisPredmet,android.R.layout.simple_list_item_1, grupaViewModel.dajGrupeZaPredmet(predmetViewModel.dajNeUpisanePredmete(godina)[position]))
+                if(spinnerGrupe.adapter.isEmpty) upis.isVisible = false
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -69,11 +72,10 @@ class UpisPredmet : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-                upis.isVisible = true;
+                if(parent?.isNotEmpty()!!) upis.isVisible=true
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                upis.isVisible = false;
             }
 
         }

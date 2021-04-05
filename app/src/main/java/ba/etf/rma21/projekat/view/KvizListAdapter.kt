@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma21.projekat.R
+import ba.etf.rma21.projekat.data.models.Datum
 import ba.etf.rma21.projekat.data.models.Kviz
 import java.util.*
 
@@ -43,19 +44,19 @@ class KvizListAdapter(var kvizovi: List<Kviz>):RecyclerView.Adapter<KvizListAdap
         if(kvizovi[position].osvojeniBodovi==null && kvizovi[position].datumKraj.before(trenutniDatum)){
             holder.stanjeKviza.setImageResource(R.drawable.crvena);
             holder.brojOsvojenihPoena.text ="";
-            holder.datum.text = String.format("%02d.%02d.%d.",kvizovi[position].datumKraj.day,kvizovi[position].datumKraj.month,kvizovi[position].datumKraj.year + 1900);
+            holder.datum.text = Datum.dajFormatiranDatum(kvizovi[position].datumKraj)
         }else if(kvizovi[position].osvojeniBodovi!=null){
             holder.stanjeKviza.setImageResource(R.drawable.plava);
             holder.brojOsvojenihPoena.text = kvizovi[position].osvojeniBodovi.toString();
-            holder.datum.text = String.format("%02d.%02d.%d.",kvizovi[position].datumRada?.day,kvizovi[position].datumRada?.month,kvizovi[position].datumRada!!.year + 1900);
+            holder.datum.text =Datum.dajFormatiranDatum(kvizovi[position].datumRada!!)
         }else if(kvizovi[position].datumPocetka.after(trenutniDatum)){
             holder.stanjeKviza.setImageResource(R.drawable.zuta);
             holder.brojOsvojenihPoena.text ="";
-            holder.datum.text = String.format("%02d.%02d.%d.",kvizovi[position].datumPocetka.day,kvizovi[position].datumPocetka.month,kvizovi[position].datumPocetka.year + 1900);
+            holder.datum.text =Datum.dajFormatiranDatum(kvizovi[position].datumPocetka)
         }else{
             holder.stanjeKviza.setImageResource(R.drawable.zelena);
             holder.brojOsvojenihPoena.text ="";
-            holder.datum.text = String.format("%02d.%02d.%d.",kvizovi[position].datumKraj.day,kvizovi[position].datumKraj.month,kvizovi[position].datumKraj.year + 1900);
+            holder.datum.text = Datum.dajFormatiranDatum(kvizovi[position].datumKraj)
         }
 
     }
