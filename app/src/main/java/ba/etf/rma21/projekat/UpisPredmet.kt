@@ -11,8 +11,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isEmpty
 import androidx.core.view.isNotEmpty
 import androidx.core.view.isVisible
+import ba.etf.rma21.projekat.data.models.Grupa
+import ba.etf.rma21.projekat.data.models.Predmet
 import ba.etf.rma21.projekat.viewmodel.GrupaViewModel
 import ba.etf.rma21.projekat.viewmodel.PredmetViewModel
+import java.util.*
+import java.util.stream.Collectors
 
 class UpisPredmet : AppCompatActivity() {
     lateinit var spinnerGodine:Spinner;
@@ -40,7 +44,7 @@ class UpisPredmet : AppCompatActivity() {
                 id: Long
             ) {
                 godina= position+1;
-                spinnerPredmeti.adapter = ArrayAdapter(this@UpisPredmet,android.R.layout.simple_list_item_1, predmetViewModel.dajNeUpisanePredmete(godina));
+                spinnerPredmeti.adapter = ArrayAdapter(this@UpisPredmet,android.R.layout.simple_list_item_1, predmetViewModel.dajNeUpisanePredmete(godina).stream().map {p: Predmet -> p.toString() }.toArray())
                 if(spinnerPredmeti.adapter.isEmpty) upis.isVisible=false
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -55,7 +59,7 @@ class UpisPredmet : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-                spinnerGrupe.adapter = ArrayAdapter(this@UpisPredmet,android.R.layout.simple_list_item_1, grupaViewModel.dajGrupeZaPredmet(predmetViewModel.dajNeUpisanePredmete(godina)[position]))
+                spinnerGrupe.adapter = ArrayAdapter(this@UpisPredmet,android.R.layout.simple_list_item_1, grupaViewModel.dajGrupeZaPredmet(predmetViewModel.dajNeUpisanePredmete(godina)[position]).stream().map {g:Grupa->g.toString() }.toArray())
                 if(spinnerGrupe.adapter.isEmpty) upis.isVisible = false
             }
 
