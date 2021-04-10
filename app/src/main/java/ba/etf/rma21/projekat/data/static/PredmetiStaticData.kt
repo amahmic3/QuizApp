@@ -25,7 +25,22 @@ fun dajPredmete(): List<Predmet> {
             ("US", 2), Predmet
             ("ORM", 2), Predmet
             ("RA", 2), Predmet
-            ("AFJ", 2)
+            ("AFJ", 2), Predmet
+            ("WT",3), Predmet
+            ("RG",3), Predmet
+            ("OIS",3), Predmet
+            ("OOI",3),Predmet
+            ("PPJ",3), Predmet
+            ("PWS",3), Predmet
+            ("VVS",3), Predmet
+            ("SI",3), Predmet
+            ("VI",3), Predmet
+            ("PIS",3),  Predmet
+            ("PMS",3), Predmet
+            ("OA",3), Predmet
+            ("DSU",3), Predmet
+            ("MK",3)
+
     )
 }
 fun dajUpisanePredmete():List<Predmet>{

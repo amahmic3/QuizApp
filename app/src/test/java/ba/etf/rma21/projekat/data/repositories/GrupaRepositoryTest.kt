@@ -14,17 +14,17 @@ class GrupaRepositoryTest{
     }
     @Test
     fun test2GetGropsByPredmet(){
-        assertEquals(0,GrupaRepository.getGroupsByPredmet("MLTI").size)
+        assertEquals(0,GrupaRepository.getGroupsByPredmet("MK").size)
     }
     @Test
     fun test1DajUpisaneGrupe(){
-        assertEquals(3,GrupaRepository.dajUpisaneGrupe().size)
+        assertEquals(7,GrupaRepository.dajUpisaneGrupe().size)
     }
     @Test
     fun test1UpisiGrupu(){
-        assertEquals(3,GrupaRepository.dajUpisaneGrupe().size)
+        assertEquals(7,GrupaRepository.dajUpisaneGrupe().size)
         GrupaRepository.upisiGrupu(Grupa("TP-G1","TP"))
-        assertEquals(4,GrupaRepository.dajUpisaneGrupe().size)
+        assertEquals(8,GrupaRepository.dajUpisaneGrupe().size)
     }
 
 }
