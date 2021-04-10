@@ -4,7 +4,7 @@ import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.repositories.KvizRepository
 
 class KvizViewModel {
-    private val kriterij = Comparator{k1:Kviz,k2:Kviz -> -k1.datumPocetka.compareTo(k2.datumPocetka)}
+    private val kriterij = Comparator{k1:Kviz,k2:Kviz -> k1.datumPocetka.compareTo(k2.datumPocetka)}
     fun dajKvizoveZaKorisnika():List<Kviz>{
         return KvizRepository.getMyKvizes().sortedWith(kriterij)
     }

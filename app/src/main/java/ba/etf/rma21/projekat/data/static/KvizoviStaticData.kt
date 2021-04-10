@@ -1,4 +1,4 @@
-package ba.etf.rma21.projekat.data.static
+ package ba.etf.rma21.projekat.data.static
 
 import ba.etf.rma21.projekat.data.models.Datum
 import ba.etf.rma21.projekat.data.models.Kviz
