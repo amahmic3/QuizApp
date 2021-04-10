@@ -8,7 +8,6 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isEmpty
 import androidx.core.view.isNotEmpty
 import androidx.core.view.isVisible
 import ba.etf.rma21.projekat.data.models.Grupa
@@ -16,16 +15,20 @@ import ba.etf.rma21.projekat.data.models.Predmet
 import ba.etf.rma21.projekat.viewmodel.GrupaViewModel
 import ba.etf.rma21.projekat.viewmodel.PredmetViewModel
 import java.util.*
-import java.util.stream.Collectors
 
 class UpisPredmet : AppCompatActivity() {
     lateinit var spinnerGodine:Spinner;
     lateinit var spinnerPredmeti:Spinner;
     lateinit var spinnerGrupe:Spinner;
     lateinit var upis: Button;
+    lateinit var predmetAdapter: ArrayAdapter<String>
+    lateinit var grupeAdapter: ArrayAdapter<String>
+    val nizPredmeta:ArrayList<String> = arrayListOf()
+    val nizGrupa:ArrayList<String> = arrayListOf()
     var predmetViewModel = PredmetViewModel()
     var grupaViewModel = GrupaViewModel()
     var godina:Int=1;
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_upis_predmet)
@@ -35,7 +38,12 @@ class UpisPredmet : AppCompatActivity() {
         upis = findViewById(R.id.dodajPredmetDugme)
         upis.isVisible = false;
         spinnerGodine.adapter = ArrayAdapter(this,android.R.layout.simple_list_item_1, listOf("1","2","3","4","5"));
-
+        predmetAdapter = ArrayAdapter(this@UpisPredmet, android.R.layout.simple_list_item_1,nizPredmeta)
+        spinnerPredmeti.adapter = predmetAdapter
+        grupeAdapter= ArrayAdapter(this@UpisPredmet, android.R.layout.simple_list_item_1,nizGrupa)
+        spinnerGrupe.adapter = grupeAdapter
+        godina = dajGodinu()
+        spinnerGodine.setSelection(godina-1)
         spinnerGodine.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -43,9 +51,14 @@ class UpisPredmet : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-                godina= position+1;
-                spinnerPredmeti.adapter = ArrayAdapter(this@UpisPredmet,android.R.layout.simple_list_item_1, predmetViewModel.dajNeUpisanePredmete(godina).stream().map {p: Predmet -> p.toString() }.toArray())
-                if(spinnerPredmeti.adapter.isEmpty) upis.isVisible=false
+                godina= position+1
+                nizPredmeta.clear()
+                nizGrupa.clear()
+                nizPredmeta.addAll(predmetViewModel.dajNeUpisanePredmete(godina).map { p: Predmet -> p.toString() })
+                grupeAdapter.notifyDataSetChanged()
+                predmetAdapter.notifyDataSetChanged()
+              //  spinnerPredmeti.adapter = ArrayAdapter(this@UpisPredmet, android.R.layout.simple_list_item_1, predmetViewModel.dajNeUpisanePredmete(godina).stream().map { p: Predmet -> p.toString() }.toArray())
+                if(spinnerPredmeti.adapter.isEmpty || spinnerGrupe.adapter.isEmpty) upis.isVisible=false
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 upis.isVisible = false;
@@ -59,7 +72,10 @@ class UpisPredmet : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-                spinnerGrupe.adapter = ArrayAdapter(this@UpisPredmet,android.R.layout.simple_list_item_1, grupaViewModel.dajGrupeZaPredmet(predmetViewModel.dajNeUpisanePredmete(godina)[position]).stream().map {g:Grupa->g.toString() }.toArray())
+                nizGrupa.clear()
+                nizGrupa.addAll( grupaViewModel.dajGrupeZaPredmet(predmetViewModel.dajNeUpisanePredmete(godina)[position]).map {g:Grupa->g.toString() })
+                grupeAdapter.notifyDataSetChanged()
+               // spinnerGrupe.adapter = ArrayAdapter(this@UpisPredmet,android.R.layout.simple_list_item_1, grupaViewModel.dajGrupeZaPredmet(predmetViewModel.dajNeUpisanePredmete(godina)[position]).stream().map {g:Grupa->g.toString() }.toArray())
                 if(spinnerGrupe.adapter.isEmpty) upis.isVisible = false
             }
 
@@ -94,5 +110,11 @@ class UpisPredmet : AppCompatActivity() {
             startActivity(otvoriPocetnuAktivnost)
         }
 
+    }
+
+    private fun dajGodinu():Int {
+        if(intent.getStringExtra("godina")!=null){
+            return intent.getStringExtra("godina")!!.toInt()
+        }else return 1
     }
 }

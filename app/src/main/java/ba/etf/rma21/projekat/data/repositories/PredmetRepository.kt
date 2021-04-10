@@ -3,7 +3,6 @@ package ba.etf.rma21.projekat.data.repositories
 import ba.etf.rma21.projekat.data.models.Predmet
 import ba.etf.rma21.projekat.data.static.dajPredmete
 import ba.etf.rma21.projekat.data.static.dajUpisanePredmete
-import java.util.stream.Collectors
 
 class PredmetRepository {
     companion object {
@@ -21,7 +20,10 @@ class PredmetRepository {
             return dajPredmete();
         }
         fun getPredmetsByGodina(godina:Int):List<Predmet>{
-            return getAll().stream().filter({p: Predmet ->p.godina==godina}).collect(Collectors.toList());
+            return getAll().filter({p: Predmet ->p.godina==godina})
+        }
+        fun ispisiSaPredmeta(predmet: Predmet){
+            upisaniPredmeti.remove(predmet)
         }
     }
 
