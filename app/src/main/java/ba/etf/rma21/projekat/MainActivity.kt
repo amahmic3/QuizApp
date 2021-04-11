@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         upisPredmeta = findViewById(R.id.upisDugme)
         kvizovi = findViewById(R.id.listaKvizova)
         kvizovi.layoutManager = GridLayoutManager(this,2);
+
         kvizAdapter = KvizListAdapter(kvizViewModel.dajKvizoveZaKorisnika())
         kvizovi.adapter = kvizAdapter
 
