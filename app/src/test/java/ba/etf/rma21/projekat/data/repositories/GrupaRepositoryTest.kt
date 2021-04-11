@@ -12,9 +12,21 @@ class GrupaRepositoryTest{
     fun test1GetGropsByPredmet(){
         assertEquals(3,GrupaRepository.getGroupsByPredmet("TP").size)
     }
+
     @Test
     fun test2GetGropsByPredmet(){
         assertEquals(0,GrupaRepository.getGroupsByPredmet("MK").size)
+    }
+    @Test
+    fun test3GetGroupsByPredmet(){
+        var bool = true;
+        for(grupa in GrupaRepository.getGroupsByPredmet("TP")){
+            if(grupa.nazivPredmeta != "TP"){
+                bool = false;
+                break;
+            }
+        }
+        assertTrue(bool)
     }
     @Test
     fun test1DajUpisaneGrupe(){
