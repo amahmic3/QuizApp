@@ -4,4 +4,6 @@
     <string name="predmet">Predmet: </string>
     <string name="grupa">Grupa: </string>
     <string name="upisDugme">Upiši me</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

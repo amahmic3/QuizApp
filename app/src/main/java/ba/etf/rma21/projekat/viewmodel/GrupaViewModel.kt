@@ -11,4 +11,7 @@ class GrupaViewModel {
     fun upisiUGrupu(nazivGrupe:String,nazivPredmeta:String){
         GrupaRepository.upisiGrupu(GrupaRepository.getGroupsByPredmet(nazivPredmeta).first { grupa: Grupa -> grupa.naziv == nazivGrupe })
     }
+    fun dajGrupu(nazivGrupe: String,nazivPredmeta: String):Grupa{
+        return GrupaRepository.getGroupsByPredmet(nazivPredmeta).first{ grupa: Grupa -> grupa.naziv == nazivGrupe }
+    }
 }

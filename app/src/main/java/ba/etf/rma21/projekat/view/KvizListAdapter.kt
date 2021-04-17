@@ -13,7 +13,7 @@ import ba.etf.rma21.projekat.data.models.Kviz
 import java.util.*
 
 @Suppress("DEPRECATION")
-class KvizListAdapter(var kvizovi: List<Kviz>):RecyclerView.Adapter<KvizListAdapter.KvizViewHolder>() {
+class KvizListAdapter(var kvizovi: List<Kviz>, private val onItemClicked: (kviz:Kviz) -> Unit):RecyclerView.Adapter<KvizListAdapter.KvizViewHolder>() {
     private lateinit var trenutniDatum :Date;
 
     inner class KvizViewHolder(itemView:View):RecyclerView.ViewHolder(itemView) {
@@ -41,6 +41,9 @@ class KvizListAdapter(var kvizovi: List<Kviz>):RecyclerView.Adapter<KvizListAdap
         holder.nazivPredmeta.text = kvizovi[position].nazivPredmeta;
         holder.nazivKviza.text = kvizovi[position].naziv;
         holder.trajanjeKviza.text = kvizovi[position].trajanje.toString()+" min";
+        holder.itemView.setOnClickListener {
+            onItemClicked(kvizovi[position])
+        }
         if(kvizovi[position].osvojeniBodovi==null && kvizovi[position].datumKraj.before(trenutniDatum)){
             holder.stanjeKviza.setImageResource(R.drawable.crvena);
             holder.brojOsvojenihPoena.text ="";
