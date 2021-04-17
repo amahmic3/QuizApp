@@ -22,7 +22,9 @@ class MainActivity : AppCompatActivity() {
 
 
     private var godina: Int = 1;
-
+    fun postaviGodinu(g:Int){
+        godina = g
+    }
     private lateinit var bottomNavigation: BottomNavigationView
     private val menuOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { odabraniItem ->
         when(odabraniItem.itemId){
@@ -33,7 +35,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.predmeti -> {
                 val predmetFragment = FragmentPredmeti.newInstance(godina)
-                postaviFragment(FragmentPredmeti.predmeti,"predmeti")
+                postaviFragment(predmetFragment,"predmeti")
                 return@OnNavigationItemSelectedListener true
             }
         }

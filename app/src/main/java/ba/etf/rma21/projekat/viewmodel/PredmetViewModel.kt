@@ -9,6 +9,7 @@ class PredmetViewModel {
     }
     fun upisiPredmet(naziv:String,godina:Int){
         PredmetRepository.upisiPredmet(PredmetRepository.getPredmetsByGodina(godina).filter { predmet: Predmet -> predmet.naziv==naziv }.first())
+
     }
 
 }
