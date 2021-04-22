@@ -1,31 +1,25 @@
 package ba.etf.rma21.projekat
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
+import androidx.core.view.iterator
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import ba.etf.rma21.projekat.view.KvizListAdapter
-import ba.etf.rma21.projekat.viewmodel.GrupaViewModel
-import ba.etf.rma21.projekat.viewmodel.KvizViewModel
-import ba.etf.rma21.projekat.viewmodel.PredmetViewModel
+import ba.etf.rma21.projekat.viewmodel.PokusajViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class MainActivity : AppCompatActivity() {
 
-
-    private var godina: Int = 1;
-    fun postaviGodinu(g:Int){
-        godina = g
+    lateinit var bottomNavigation: BottomNavigationView
+    var pokusajViewModel = PokusajViewModel()
+    fun promijeniMenu(){
+        for(menu: MenuItem in bottomNavigation.menu){
+            menu.isVisible=!menu.isVisible
+        }
     }
-    private lateinit var bottomNavigation: BottomNavigationView
+
     private val menuOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { odabraniItem ->
         when(odabraniItem.itemId){
             R.id.kvizovi ->{
@@ -34,15 +28,27 @@ class MainActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.predmeti -> {
-                val predmetFragment = FragmentPredmeti.newInstance(godina)
+                val predmetFragment = FragmentPredmeti.newInstance()
                 postaviFragment(predmetFragment,"predmeti")
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.predajKviz -> {
+                val fragmentPoruka = FragmentPoruka(pokusajViewModel.predajKviz())
+                promijeniMenu()
+                postaviFragment(fragmentPoruka,"poruka")
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.zaustaviKviz->{
+                val kvizFragment = FragmentKvizovi.newInstance()
+                promijeniMenu()
+                postaviFragment(kvizFragment,"kvizovi")
                 return@OnNavigationItemSelectedListener true
             }
         }
         false
     }
 
-    private fun postaviFragment(fragment: Fragment,tag:String) {
+     fun postaviFragment(fragment: Fragment,tag:String) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.container,fragment,tag)
             transaction.addToBackStack(null)
@@ -52,8 +58,11 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if(supportFragmentManager.backStackEntryCount==0){
             super.onBackPressed()
-        }else while(supportFragmentManager.backStackEntryCount!=1) supportFragmentManager.popBackStackImmediate()
-
+        }else {
+            if(!bottomNavigation.menu[0].isVisible) promijeniMenu()
+            while(supportFragmentManager.backStackEntryCount!=1) supportFragmentManager.popBackStackImmediate()
+           if(bottomNavigation.selectedItemId != R.id.kvizovi) bottomNavigation.selectedItemId = R.id.kvizovi
+        }
 
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +71,8 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation = findViewById(R.id.bottomNav)
         bottomNavigation.setOnNavigationItemSelectedListener(menuOnNavigationItemSelectedListener)
         bottomNavigation.selectedItemId = R.id.kvizovi
-
+        bottomNavigation.menu[2].isVisible=false
+        bottomNavigation.menu[3].isVisible=false
     }
 
     override fun onResume() {

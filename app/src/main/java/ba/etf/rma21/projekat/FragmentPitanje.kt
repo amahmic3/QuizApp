@@ -1,59 +1,84 @@
 package ba.etf.rma21.projekat
 
+import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.ListView
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import ba.etf.rma21.projekat.data.models.Pitanje
+import ba.etf.rma21.projekat.viewmodel.PokusajViewModel
+import kotlin.collections.set
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [FragmentPitanje.newInstance] factory method to
- * create an instance of this fragment.
- */
-class FragmentPitanje : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class FragmentPitanje(val pitanje:Pitanje) : Fragment() {
+    lateinit var odgovori:ListView
+    lateinit var pokusajViewModel:PokusajViewModel
+    val zelenaBoja = Color.parseColor("#3DDC84")
+    val crvenaBoja = Color.parseColor("#DB4F3D")
+    val crnaBoja = Color.parseColor("#FFFFFF")
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    val itemClickedListener = object : AdapterView.OnItemClickListener{
+        override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            if (!odgovoreno){
+                pokusajViewModel.postaviOdgovor(pitanje,position)
+                    if(position == pitanje.tacan) {
+                        (parent!!.getChildAt(position) as TextView).setTextColor(zelenaBoja)
+
+                    }else {
+                        (parent!!.getChildAt(position) as TextView).setTextColor(crvenaBoja)
+                        (parent!!.getChildAt(pitanje.tacan) as TextView).setTextColor(zelenaBoja)
+                    }
+                odgovoreno=true
+                (parentFragment as FragmentPokusaj).postaviBoju()
+            }
+
         }
-    }
 
+    }
+    var odgovoreno:Boolean = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pitanje, container, false)
+
+        pokusajViewModel= (parentFragment as FragmentPokusaj).pokusajViewModel
+
+        if(pokusajViewModel.kvizZavrsen||pokusajViewModel.daLiJeOdgovorio(pitanje) ){
+            odgovoreno=true
+        }
+        val view =  inflater.inflate(R.layout.fragment_pitanje, container, false)
+
+        val tekstPolje = view.findViewById<TextView>(R.id.tekstPitanja)
+        tekstPolje.text = pitanje.tekst
+        odgovori= view.findViewById(R.id.odgovoriLista)
+        odgovori.adapter = object : ArrayAdapter<String>(activity as MainActivity,R.layout.item_odgovor,pitanje.opcije){
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val pogled = super.getView(position, convertView, parent)
+                if(pokusajViewModel.daLiJeOdgovorio(pitanje)){
+                   if(pokusajViewModel.dajOdgovor(pitanje)==position && pokusajViewModel.dajOdgovor(pitanje)==pitanje.tacan){
+                       (pogled as TextView).setTextColor(zelenaBoja)
+                   }else if(pokusajViewModel.dajOdgovor(pitanje)==position){
+                       (pogled as TextView).setTextColor(crvenaBoja)
+                   }else if(pitanje.tacan==position){
+                       (pogled as TextView).setTextColor(zelenaBoja)
+                   }else{
+                       (pogled as TextView).setTextColor(crnaBoja)
+                   }
+                }
+                return pogled
+            }
+        }
+        odgovori.onItemClickListener = itemClickedListener
+        return view
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FragmentPitanje.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FragmentPitanje().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+
+        fun newInstance(pitanje: Pitanje) = FragmentPitanje(pitanje)
     }
 }

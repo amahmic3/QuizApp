@@ -18,7 +18,7 @@ import ba.etf.rma21.projekat.viewmodel.KvizViewModel
 import ba.etf.rma21.projekat.viewmodel.PredmetViewModel
 
 
-class FragmentPredmeti(private var godina: Int) : Fragment() {
+class FragmentPredmeti : Fragment() {
     private var spasiKorisnika:Boolean = false
     private lateinit var spinnerGodine: Spinner;
     private lateinit var spinnerPredmeti: Spinner;
@@ -33,10 +33,9 @@ class FragmentPredmeti(private var godina: Int) : Fragment() {
             position: Int,
             id: Long
         ) {
-            godina= position+1
             if(spasiKorisnika) Korisnik.mapaVrijednosti["Godina"]=position
-            spinnerPredmeti.adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_1, predmetViewModel.dajNeUpisanePredmete(godina).map { p: Predmet -> p.toString() })
-            if(!spasiKorisnika && Korisnik.mapaVrijednosti["Godina"]!=-1){
+            spinnerPredmeti.adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_1, predmetViewModel.dajNeUpisanePredmete(position+1).map { p: Predmet -> p.toString() })
+            if(!spasiKorisnika){
                 Korisnik.mapaVrijednosti["Predmet"]?.let { spinnerPredmeti.setSelection(it) }
             }
             if(spinnerPredmeti.adapter.isEmpty){
@@ -56,8 +55,8 @@ class FragmentPredmeti(private var godina: Int) : Fragment() {
             id: Long
         ) {
             if(spasiKorisnika) Korisnik.mapaVrijednosti["Predmet"]=position
-            spinnerGrupe.adapter = ArrayAdapter(context!!,android.R.layout.simple_list_item_1, grupaViewModel.dajGrupeZaPredmet(predmetViewModel.dajNeUpisanePredmete(godina)[position]).map {g: Grupa ->g.toString() })
-            if(!spasiKorisnika && Korisnik.mapaVrijednosti["Godina"]!=-1){
+            spinnerGrupe.adapter = ArrayAdapter(context!!,android.R.layout.simple_list_item_1, grupaViewModel.dajGrupeZaPredmet(predmetViewModel.dajNeUpisanePredmete(Korisnik.mapaVrijednosti["Godina"]!!+1)[position]).map {g: Grupa ->g.toString() })
+            if(!spasiKorisnika){
                 Korisnik.mapaVrijednosti["Grupa"]?.let { spinnerGrupe.setSelection(it) }
             }
             if(spinnerGrupe.adapter.isEmpty){
@@ -100,14 +99,16 @@ class FragmentPredmeti(private var godina: Int) : Fragment() {
         spinnerPredmeti.onItemSelectedListener = predmetiListener
         spinnerGrupe = view.findViewById(R.id.odabirGrupa)
         spinnerGrupe.onItemSelectedListener = grupeListener
-        if(Korisnik.mapaVrijednosti["Godina"]!=-1) godina = Korisnik.mapaVrijednosti["Godina"]!!+1
-        spinnerGodine.setSelection(godina-1)
+        Korisnik.mapaVrijednosti["Godina"]?.let { spinnerGodine.setSelection(it) }
         upis.setOnClickListener{
             grupaViewModel.upisiUGrupu(spinnerGrupe.selectedItem.toString(),spinnerPredmeti.selectedItem.toString())
-            predmetViewModel.upisiPredmet(spinnerPredmeti.selectedItem.toString(),godina)
-            (activity as MainActivity).postaviGodinu(godina)
+            Korisnik.mapaVrijednosti["Godina"]?.let { it1 -> predmetViewModel.upisiPredmet(spinnerPredmeti.selectedItem.toString(), it1+1) }
+            Korisnik.mapaVrijednosti["Predmet"]=0
+            Korisnik.mapaVrijednosti["Grupa"]=0
+            Korisnik.azururajKvizove()
             val transakcija = activity!!.supportFragmentManager.beginTransaction()
-            transakcija.replace(R.id.container,FragmentPoruka.newInstance(grupaViewModel.dajGrupu(spinnerGrupe.selectedItem.toString(),spinnerPredmeti.selectedItem.toString())))
+            val grupa = grupaViewModel.dajGrupu(spinnerGrupe.selectedItem.toString(),spinnerPredmeti.selectedItem.toString())
+            transakcija.replace(R.id.container,FragmentPoruka.newInstance("Uspješno ste upisani u grupu ${grupa.naziv} predmeta ${grupa.nazivPredmeta}!"))
             transakcija.addToBackStack(null)
             transakcija.commit()
         }
@@ -115,6 +116,6 @@ class FragmentPredmeti(private var godina: Int) : Fragment() {
     }
 
     companion object {
-        fun newInstance(godina : Int) = FragmentPredmeti(godina)
+        fun newInstance() = FragmentPredmeti()
     }
 }

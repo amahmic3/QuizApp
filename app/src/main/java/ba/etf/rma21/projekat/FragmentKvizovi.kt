@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma21.projekat.data.models.Kviz
+import ba.etf.rma21.projekat.data.repositories.PitanjeKvizRepository
 import ba.etf.rma21.projekat.view.KvizListAdapter
 import ba.etf.rma21.projekat.viewmodel.GrupaViewModel
 import ba.etf.rma21.projekat.viewmodel.KvizViewModel
@@ -75,7 +76,13 @@ class FragmentKvizovi : Fragment() {
         menu?.selectedItemId =R.id.kvizovi
     }
     private fun zapocniKviz(kviz: Kviz){
-
+        (activity as MainActivity).promijeniMenu()
+        val pokusajViewModel=(activity as MainActivity).pokusajViewModel
+        pokusajViewModel.aktivirajKviz(kviz)
+        val transakcija = (activity as MainActivity).supportFragmentManager.beginTransaction()
+        transakcija.replace(R.id.container,FragmentPokusaj.newInstance(PitanjeKvizRepository.getPitanja(kviz.naziv,kviz.nazivPredmeta)))
+        transakcija.addToBackStack(null)
+        transakcija.commit()
     }
     companion object {
         fun newInstance() = FragmentKvizovi()
