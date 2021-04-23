@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +18,7 @@ import ba.etf.rma21.projekat.viewmodel.GrupaViewModel
 import ba.etf.rma21.projekat.viewmodel.KvizViewModel
 import ba.etf.rma21.projekat.viewmodel.PredmetViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.util.*
 
 class FragmentKvizovi : Fragment() {
 
@@ -24,8 +26,6 @@ class FragmentKvizovi : Fragment() {
     private lateinit var kvizAdapter: KvizListAdapter;
     private lateinit var filter: Spinner;
     private var kvizViewModel = KvizViewModel()
-    private var predmetViewModel = PredmetViewModel()
-    private var grupaViewModel = GrupaViewModel();
     private val onFilterChanged = object : AdapterView.OnItemSelectedListener{
         override fun onItemSelected(
             parent: AdapterView<*>?,
@@ -76,13 +76,17 @@ class FragmentKvizovi : Fragment() {
         menu?.selectedItemId =R.id.kvizovi
     }
     private fun zapocniKviz(kviz: Kviz){
-        (activity as MainActivity).promijeniMenu()
-        val pokusajViewModel=(activity as MainActivity).pokusajViewModel
-        pokusajViewModel.aktivirajKviz(kviz)
-        val transakcija = (activity as MainActivity).supportFragmentManager.beginTransaction()
-        transakcija.replace(R.id.container,FragmentPokusaj.newInstance(PitanjeKvizRepository.getPitanja(kviz.naziv,kviz.nazivPredmeta)))
-        transakcija.addToBackStack(null)
-        transakcija.commit()
+        if(kviz.datumPocetka.before(Calendar.getInstance().time)) {
+            (activity as MainActivity).promijeniMenu()
+            val pokusajViewModel = (activity as MainActivity).pokusajViewModel
+            pokusajViewModel.aktivirajKviz(kviz)
+            val transakcija = (activity as MainActivity).supportFragmentManager.beginTransaction()
+            transakcija.replace(R.id.container, FragmentPokusaj.newInstance(PitanjeKvizRepository.getPitanja(kviz.naziv, kviz.nazivPredmeta)))
+            transakcija.addToBackStack(null)
+            transakcija.commit()
+        }else{
+            Toast.makeText(context as MainActivity,"Kviz još nije počeo",Toast.LENGTH_SHORT).show()
+        }
     }
     companion object {
         fun newInstance() = FragmentKvizovi()

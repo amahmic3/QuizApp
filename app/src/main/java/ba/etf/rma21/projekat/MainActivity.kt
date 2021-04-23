@@ -39,9 +39,10 @@ class MainActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.zaustaviKviz->{
-                val kvizFragment = FragmentKvizovi.newInstance()
+                //val kvizFragment = FragmentKvizovi.newInstance()
                 promijeniMenu()
-                postaviFragment(kvizFragment,"kvizovi")
+              //  postaviFragment(kvizFragment,"kvizovi")
+                bottomNavigation.selectedItemId = R.id.kvizovi
                 return@OnNavigationItemSelectedListener true
             }
         }

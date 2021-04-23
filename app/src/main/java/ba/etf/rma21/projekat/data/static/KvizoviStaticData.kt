@@ -22,7 +22,7 @@ fun dajKvizove():List<Kviz>{
                 Kviz("Kviz 8 G1","ORM",Datum.dajDatum(2021,4,2),Datum.dajDatum(2021,4,3),Datum.dajDatum(2021,4,2),5,"ORM-G1",9F),
                 Kviz("Kviz 9 G1","VIS",Datum.dajDatum(2021,5,1),Datum.dajDatum(2021,5,5),null,5,"VIS-G1",null),
                 Kviz("Kviz 9 G2","VIS",Datum.dajDatum(2021,5,1),Datum.dajDatum(2021,5,5),null,5,"VIS-G2",null),
-                Kviz("Kviz 11 G2","RA",Datum.dajDatum(2021,5,1),Datum.dajDatum(2021,5,5),null,5,"RA-G2",null),
+                Kviz("Kviz 11 G2","RA",Datum.dajDatum(2021,4,1),Datum.dajDatum(2021,5,5),null,5,"RA-G2",null),
                 Kviz("Kviz 12 G1","OOAD",Datum.dajDatum(2021,5,1),Datum.dajDatum(2021,5,5),null,5,"OOAD-G1",null),
                 Kviz("Kviz 13 G1","LD",Datum.dajDatum(2021,5,1),Datum.dajDatum(2021,5,5),null,5,"LD-G1",null),
                 Kviz("Kviz 2 G3","TP",Datum.dajDatum(2021,5,10),Datum.dajDatum(2021,5,15),null,2,"TP-G3",null)

@@ -20,7 +20,7 @@ class FragmentPokusaj(val pitanja:List<Pitanje>) : Fragment() {
     lateinit var navigacijaPitanja: NavigationView
     val zelenaBoja = Color.parseColor("#3DDC84")
     val crvenaBoja = Color.parseColor("#DB4F3D")
-    val crnaBoja = Color.parseColor("#FFFFFF")
+    val crnaBoja = Color.parseColor("#B7B7B5")
     var trenutnoPitanje :Int=0
     lateinit var pokusajViewModel:PokusajViewModel
 
@@ -32,6 +32,7 @@ class FragmentPokusaj(val pitanja:List<Pitanje>) : Fragment() {
             }else tekst.setSpan(ForegroundColorSpan(crvenaBoja),0,tekst.length,0)
         }else tekst.setSpan(ForegroundColorSpan(crnaBoja),0,tekst.length,0)
         navigacijaPitanja.menu.get(redniBroj).setTitle(tekst)
+
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

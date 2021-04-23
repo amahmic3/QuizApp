@@ -7,7 +7,6 @@ import ba.etf.rma21.projekat.data.repositories.KvizRepository
 object Korisnik {
     var mapaVrijednosti = HashMap<String,Int>()
     var mapaKvizova = HashMap<Kviz,HashMap<Pitanje,Int>>()
-    var mapaPitanja=HashMap<Pitanje,Int>()
     var aktivnaPitanja :HashMap<Pitanje,Int>?=null
     fun azururajKvizove(){
         for(kviz in KvizRepository.getMyKvizes()) mapaKvizova.putIfAbsent(kviz,HashMap())

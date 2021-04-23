@@ -40,6 +40,7 @@ class FragmentPredmeti : Fragment() {
             }
             if(spinnerPredmeti.adapter.isEmpty){
                 upis.isVisible=false
+                spinnerGrupe.adapter=ArrayAdapter<String>(context!!, android.R.layout.simple_list_item_1, listOf())
                 spasiKorisnika=true
             }
         }

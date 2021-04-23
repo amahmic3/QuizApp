@@ -38,13 +38,17 @@ class PokusajViewModel() {
         return brTacnih
     }
     fun dajPoruku(brTacnih:Int=dajBrTacnih()):String{
-        return "Završili ste kviz ${aktivniKviz.naziv} sa tačnosti ${brTacnih*100.0/brPitanja}%"
+        var procenat = brTacnih*100.0/brPitanja
+        if(brPitanja==0) procenat=0.0;
+        return "Završili ste kviz ${aktivniKviz.naziv} sa tačnosti ${procenat}%"
     }
     fun predajKviz():String{
         val brTacnih = dajBrTacnih()
         if(aktivniKviz.datumKraj.after(Calendar.getInstance().time)) {
             aktivniKviz.datumRada = Calendar.getInstance().time
-            aktivniKviz.osvojeniBodovi = brTacnih * 100F / brPitanja
+            if(brPitanja!=0) {
+                aktivniKviz.osvojeniBodovi = brTacnih * 100F / brPitanja
+            }else aktivniKviz.osvojeniBodovi=0F
         }
         return dajPoruku(brTacnih)
     }
