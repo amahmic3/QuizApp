@@ -12,11 +12,8 @@ object Korisnik {
     var listaPredmeta = listOf<Predmet>()
     var listaGrupa = listOf<Grupa>()
 
-    lateinit var kvizTaken:KvizTaken
-    var brTacnihOdgovora:Int = 0
-
     fun aktivirajKviz(kviz: Kviz){
-        brTacnihOdgovora=0
+
         if(!mapaKvizova.containsKey(kviz)){
                 mapaKvizova[kviz] = HashMap()
         }

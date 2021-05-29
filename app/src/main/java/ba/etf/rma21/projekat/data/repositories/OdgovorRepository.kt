@@ -1,6 +1,7 @@
 package ba.etf.rma21.projekat.data.repositories
 
 import ba.etf.rma21.projekat.Korisnik
+import ba.etf.rma21.projekat.data.models.KvizTaken
 import ba.etf.rma21.projekat.data.models.Odgovor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -30,9 +31,14 @@ class OdgovorRepository {
 
         suspend fun postaviOdgovorKviz(idKvizTaken: Int, idPitanje: Int, odgovor: Int): Int? {
             return withContext(Dispatchers.IO){
-                val povratna:Int =-1
+                var povratna:Int =-1
                 val url = URL(ApiConfig.baseURL+"/student/${AccountRepository.getHash()}/kviztaken/$idKvizTaken/odgovor")
-                val requestBody = "{\"odgovor\":$odgovor,\"pitanje\":$idPitanje,\"bodovi\":${Korisnik.kvizTaken.osvojeniBodovi}}"
+                val kvizTaken:KvizTaken? = TakeKvizRepository.getPocetiKvizovi()?.first { kvizTaken ->  kvizTaken.id == idKvizTaken}
+                val pitanja = PitanjeKvizRepository.getPitanja(kvizTaken!!.kvizID)
+                val postavljenoPitanje = pitanja.first { pitanje -> pitanje.id==idPitanje }
+                val osvojeniBodovi:Double = if(odgovor == postavljenoPitanje.tacan) kvizTaken.osvojeniBodovi+100F/pitanja.size else kvizTaken.osvojeniBodovi
+                povratna=osvojeniBodovi.toInt()
+                val requestBody = "{\"odgovor\":$odgovor,\"pitanje\":$idPitanje,\"bodovi\":${osvojeniBodovi}}"
                 (url.openConnection() as? HttpURLConnection)?.run {
                     this.doOutput = true
                     this.doInput=true
@@ -42,7 +48,6 @@ class OdgovorRepository {
                     val os =this.outputStream
                     os.write(requestBody.toByteArray())
                     val rezultat:String = this.inputStream.bufferedReader().use { it.readText() }
-                    val jo = JSONObject(rezultat)
                 }
                 return@withContext povratna
             }

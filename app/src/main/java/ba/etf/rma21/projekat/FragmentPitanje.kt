@@ -53,7 +53,7 @@ class FragmentPitanje(val pitanje:Pitanje) : Fragment() {
         val view =  inflater.inflate(R.layout.fragment_pitanje, container, false)
 
         val tekstPolje = view.findViewById<TextView>(R.id.tekstPitanja)
-        tekstPolje.text = pitanje.tekst
+        tekstPolje.text = pitanje.tekstPitanja
         odgovori= view.findViewById(R.id.odgovoriLista)
         odgovori.adapter = object : ArrayAdapter<String>(activity as MainActivity,R.layout.item_odgovor,pitanje.opcije){
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {

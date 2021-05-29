@@ -19,6 +19,9 @@ class PokusajViewModel(val ucitajKviz:((List<Pitanje>)->Unit)?) {
     var brPitanja:Int=0
     var kvizZavrsen =false
     val scope = CoroutineScope(Job()+Dispatchers.Main)
+    lateinit var kvizTaken: KvizTaken
+    lateinit var listaPitanja:List<Pitanje>
+    var brTacnih:Int=0
     fun aktivirajKviz(kviz: Kviz){
         scope.launch {
             aktivniKviz = kviz
@@ -26,23 +29,21 @@ class PokusajViewModel(val ucitajKviz:((List<Pitanje>)->Unit)?) {
             kvizZavrsen = false
             if (aktivniKviz.osvojeniBodovi != null || aktivniKviz.datumKraj!!.before(Calendar.getInstance().time)) kvizZavrsen =
                 true
-            val listaPitanja = PitanjeKvizRepository.getPitanja(kviz.id)
+            listaPitanja = PitanjeKvizRepository.getPitanja(kviz.id)
             brPitanja=listaPitanja.size
-            val kvizTaken = TakeKvizRepository.zapocniKviz(kviz.id)
-            Korisnik.kvizTaken=kvizTaken as KvizTaken
-            if(kvizTaken!=null) {
-                val listaOdgovora = OdgovorRepository.getOdgovoriKviz(kvizTaken.id) as List<Odgovor>
-                for(odgovor in listaOdgovora){
-                    for(pitanje in listaPitanja){
-                        if(pitanje.id == odgovor.idPitanja){
-                            Korisnik.aktivnaPitanja!![pitanje] = odgovor.redniBrojOdgovora
-                            Korisnik.brTacnihOdgovora+=if(pitanje.tacan==odgovor.redniBrojOdgovora) 1 else 0
-                            break
-                        }
+            kvizTaken = TakeKvizRepository.zapocniKviz(kviz.id)!!
+
+            val listaOdgovora = OdgovorRepository.getOdgovoriKviz(kvizTaken.id) as List<Odgovor>
+            for(odgovor in listaOdgovora){
+                for(pitanje in listaPitanja){
+                    if(pitanje.id == odgovor.id){
+                        Korisnik.aktivnaPitanja!![pitanje] = odgovor.odgovoreno
+                        brTacnih+=if(pitanje.tacan==odgovor.odgovoreno) 1 else 0
+                        break
                     }
                 }
-                ucitajKviz?.invoke(listaPitanja)
             }
+            ucitajKviz?.invoke(listaPitanja)
         }
     }
     fun daLiJeOdgovorio(pitanje: Pitanje):Boolean{
@@ -57,18 +58,16 @@ class PokusajViewModel(val ucitajKviz:((List<Pitanje>)->Unit)?) {
     }
     fun postaviOdgovor(pitanje: Pitanje,odgovor:Int){
         Korisnik.aktivnaPitanja!![pitanje]=odgovor
-        Korisnik.brTacnihOdgovora += if(pitanje.tacan == odgovor) 1 else 0
-        Korisnik.kvizTaken.osvojeniBodovi = (Korisnik.brTacnihOdgovora/brPitanja.toDouble())*100
+        brTacnih += if(pitanje.tacan == odgovor) 1 else 0
         CoroutineScope(Job()).launch {
-            OdgovorRepository.postaviOdgovorKviz(Korisnik.kvizTaken.id,pitanje.id,odgovor)
+            OdgovorRepository.postaviOdgovorKviz(kvizTaken.id,pitanje.id,odgovor)
         }
     }
     fun dajBrTacnih():Int{
-        return Korisnik.brTacnihOdgovora
+        return brTacnih
     }
     fun dajPoruku(brTacnih:Int=dajBrTacnih()):String{
-        var procenat = brTacnih*100.0/brPitanja
-        if(brPitanja==0) procenat=0.0;
+        var procenat = if(brPitanja!=0) brTacnih*100.0/brPitanja else 0.0
         return "Završili ste kviz ${aktivniKviz.naziv} sa tačnosti ${procenat}%"
     }
     fun predajKviz():String{
@@ -78,6 +77,11 @@ class PokusajViewModel(val ucitajKviz:((List<Pitanje>)->Unit)?) {
             if(brPitanja!=0) {
                 aktivniKviz.osvojeniBodovi = brTacnih * 100F / brPitanja
             }else aktivniKviz.osvojeniBodovi=0F
+        }
+        for(pitanje in listaPitanja){
+            if(!Korisnik.aktivnaPitanja!!.containsKey(pitanje)){
+                postaviOdgovor(pitanje,-1)
+            }
         }
         return dajPoruku(brTacnih)
     }

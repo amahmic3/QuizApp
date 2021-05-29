@@ -36,7 +36,7 @@ class PitanjeTest {
         var indeks = 0
         for (pitanje in pitanja) {
             onView(withId(R.id.navigacijaPitanja)).perform(NavigationViewActions.navigateTo(indeks))
-            onView(withId(R.id.tekstPitanja)).check(matches(withText(pitanja[indeks].tekst)))
+            onView(withId(R.id.tekstPitanja)).check(matches(withText(pitanja[indeks].tekstPitanja)))
             indeks++
         }
     }

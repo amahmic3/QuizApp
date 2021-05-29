@@ -25,7 +25,7 @@ class TakeKvizRepository {
                     val jo = JSONObject(rezultat)
                     if(jo.length()<2) return@withContext null
                     val datumRada = SimpleDateFormat("yyyy-MM-dd").parse(jo.getString("datumRada")) as Date
-                    return@withContext KvizTaken(jo.getInt("id"),jo.getDouble("osvojeniBodovi"),datumRada,idKviza)
+                    return@withContext KvizTaken(jo.getInt("id"),jo.getString("student"),jo.getDouble("osvojeniBodovi"),datumRada,idKviza)
                 }
             }
         }
@@ -38,12 +38,12 @@ class TakeKvizRepository {
                 (url.openConnection() as? HttpURLConnection)?.run {
                     val rezultat = this.inputStream.bufferedReader().use { it.readText() }
                     val jsonNiz=JSONArray(rezultat)
-                    if(jsonNiz.length()==0) return@withContext null
+                    if(jsonNiz.length()==0) return@withContext listOf<KvizTaken>()
                     listaZapocetihKvizova = mutableListOf()
                     for(i:Int in 0..jsonNiz.length()-1){
                         val jo = jsonNiz.getJSONObject(i)
                         val datum: Date = SimpleDateFormat("yyyy-MM-dd").parse(jo.getString("datumRada")) as Date
-                        listaZapocetihKvizova.add(KvizTaken(jo.getInt("id"),jo.getDouble("osvojeniBodovi"),datum,jo.getInt("KvizId")))
+                        listaZapocetihKvizova.add(KvizTaken(jo.getInt("id"),jo.getString("student"),jo.getDouble("osvojeniBodovi"),datum,jo.getInt("KvizId")))
                     }
                 }
                 return@withContext listaZapocetihKvizova

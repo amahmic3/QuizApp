@@ -68,7 +68,7 @@ class KvizRepository {
             val idKviza = jo.getInt("id")
             val nazivKviza = jo.getString("naziv")
             val datumPocetka = jo.getString("datumPocetak")
-            val datumKraja = jo.getString("datumKraj")
+            val datumKraja = jo.get("datumKraj")
             val trajanje = jo.getInt("trajanje")
             val urlGrupe = URL(ApiConfig.baseURL+"/kviz/$idKviza/grupa")
             val listaPredmeta = HashSet<String>()
@@ -81,7 +81,7 @@ class KvizRepository {
                 }
             }
             val datumP:Date? = if(datumPocetka=="null") null else SimpleDateFormat("yyyy-MM-dd").parse(datumPocetka)
-            val datumK:Date? = if(datumKraja=="null") Datum.dajDatum(2050,1,2) else SimpleDateFormat("yyyy-MM-dd").parse(datumPocetka)
+            val datumK:Date? = if(datumKraja.toString()=="null") Datum.dajDatum(2050,1,2) else SimpleDateFormat("yyyy-MM-dd").parse(datumKraja.toString())
             return Kviz(idKviza,nazivKviza,listaPredmeta.toList(),datumP,datumK,null,trajanje,null)
         }
         suspend fun getUpisani(): List<Kviz>? {
