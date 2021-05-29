@@ -36,7 +36,7 @@ class FragmentPokusaj(val pitanja:List<Pitanje>) : Fragment() {
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        pokusajViewModel=(activity as MainActivity).pokusajViewModel
+        pokusajViewModel=Korisnik.pokusajViewModel
         pokusajViewModel.brPitanja=pitanja.size
         val view = inflater.inflate(R.layout.fragment_pokusaj, container, false)
         navigacijaPitanja = view.findViewById(R.id.navigacijaPitanja)

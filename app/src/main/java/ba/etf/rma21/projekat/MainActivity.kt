@@ -13,7 +13,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class MainActivity : AppCompatActivity() {
 
     lateinit var bottomNavigation: BottomNavigationView
-    var pokusajViewModel = PokusajViewModel()
     fun promijeniMenu(){
         for(menu: MenuItem in bottomNavigation.menu){
             menu.isVisible=!menu.isVisible
@@ -33,15 +32,13 @@ class MainActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.predajKviz -> {
-                val fragmentPoruka = FragmentPoruka(pokusajViewModel.predajKviz())
+                val fragmentPoruka = FragmentPoruka(Korisnik.pokusajViewModel.predajKviz())
                 promijeniMenu()
                 postaviFragment(fragmentPoruka,"poruka")
                 return@OnNavigationItemSelectedListener true
             }
             R.id.zaustaviKviz->{
-                //val kvizFragment = FragmentKvizovi.newInstance()
                 promijeniMenu()
-              //  postaviFragment(kvizFragment,"kvizovi")
                 bottomNavigation.selectedItemId = R.id.kvizovi
                 return@OnNavigationItemSelectedListener true
             }

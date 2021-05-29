@@ -12,7 +12,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import ba.etf.rma21.projekat.data.models.Pitanje
 import ba.etf.rma21.projekat.viewmodel.PokusajViewModel
-import kotlin.collections.set
 
 
 class FragmentPitanje(val pitanje:Pitanje) : Fragment() {
@@ -31,7 +30,7 @@ class FragmentPitanje(val pitanje:Pitanje) : Fragment() {
 
                     }else {
                         (parent!!.getChildAt(position) as TextView).setTextColor(crvenaBoja)
-                        (parent!!.getChildAt(pitanje.tacan) as TextView).setTextColor(zelenaBoja)
+                        (parent.getChildAt(pitanje.tacan) as TextView).setTextColor(zelenaBoja)
                     }
                 odgovoreno=true
                 (parentFragment as FragmentPokusaj).postaviBoju()

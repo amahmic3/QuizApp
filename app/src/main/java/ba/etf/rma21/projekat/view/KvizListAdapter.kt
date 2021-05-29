@@ -38,28 +38,33 @@ class KvizListAdapter(var kvizovi: List<Kviz>, private val onItemClicked: (kviz:
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: KvizViewHolder, position: Int) {
         trenutniDatum = Date();
-        holder.nazivPredmeta.text = kvizovi[position].nazivPredmeta;
+        var naziviPredmeta = ""
+        kvizovi[position].naziviPredmeta.forEach {
+            naziviPredmeta+=it
+            naziviPredmeta+=" "
+        }
+        holder.nazivPredmeta.text = naziviPredmeta;
         holder.nazivKviza.text = kvizovi[position].naziv;
         holder.trajanjeKviza.text = kvizovi[position].trajanje.toString()+" min";
         holder.itemView.setOnClickListener {
             onItemClicked(kvizovi[position])
         }
-        if(kvizovi[position].osvojeniBodovi==null && kvizovi[position].datumKraj.before(trenutniDatum)){
+        if(kvizovi[position].osvojeniBodovi==null && kvizovi[position].datumKraj!!.before(trenutniDatum)){
             holder.stanjeKviza.setImageResource(R.drawable.crvena);
             holder.brojOsvojenihPoena.text ="";
-            holder.datum.text = Datum.dajFormatiranDatum(kvizovi[position].datumKraj)
+            holder.datum.text = Datum.dajFormatiranDatum(kvizovi[position].datumKraj!!)
         }else if(kvizovi[position].osvojeniBodovi!=null){
             holder.stanjeKviza.setImageResource(R.drawable.plava);
             holder.brojOsvojenihPoena.text = kvizovi[position].osvojeniBodovi.toString();
             holder.datum.text =Datum.dajFormatiranDatum(kvizovi[position].datumRada!!)
-        }else if(kvizovi[position].datumPocetka.after(trenutniDatum)){
+        }else if(kvizovi[position].datumPocetka!!.after(trenutniDatum)){
             holder.stanjeKviza.setImageResource(R.drawable.zuta);
             holder.brojOsvojenihPoena.text ="";
-            holder.datum.text =Datum.dajFormatiranDatum(kvizovi[position].datumPocetka)
+            holder.datum.text =Datum.dajFormatiranDatum(kvizovi[position].datumPocetka!!)
         }else{
             holder.stanjeKviza.setImageResource(R.drawable.zelena);
             holder.brojOsvojenihPoena.text ="";
-            holder.datum.text = Datum.dajFormatiranDatum(kvizovi[position].datumKraj)
+            holder.datum.text = Datum.dajFormatiranDatum(kvizovi[position].datumKraj!!)
         }
 
     }

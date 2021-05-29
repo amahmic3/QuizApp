@@ -12,10 +12,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma21.projekat.data.models.Kviz
+import ba.etf.rma21.projekat.data.models.Pitanje
 import ba.etf.rma21.projekat.data.repositories.PitanjeKvizRepository
 import ba.etf.rma21.projekat.view.KvizListAdapter
 import ba.etf.rma21.projekat.viewmodel.GrupaViewModel
 import ba.etf.rma21.projekat.viewmodel.KvizViewModel
+import ba.etf.rma21.projekat.viewmodel.PokusajViewModel
 import ba.etf.rma21.projekat.viewmodel.PredmetViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*
@@ -25,7 +27,7 @@ class FragmentKvizovi : Fragment() {
     private lateinit var kvizovi: RecyclerView;
     private lateinit var kvizAdapter: KvizListAdapter;
     private lateinit var filter: Spinner;
-    private var kvizViewModel = KvizViewModel()
+    private var kvizViewModel = KvizViewModel(this@FragmentKvizovi::izmijeniKvizove)
     private val onFilterChanged = object : AdapterView.OnItemSelectedListener{
         override fun onItemSelected(
             parent: AdapterView<*>?,
@@ -33,14 +35,16 @@ class FragmentKvizovi : Fragment() {
             position: Int,
             id: Long
         ) {
+            kvizAdapter.kvizovi= listOf<Kviz>()
+            kvizAdapter.notifyDataSetChanged()
             when (position) {
-                0 -> kvizAdapter.kvizovi = (kvizViewModel.dajKvizoveZaKorisnika())
-                1 -> kvizAdapter.kvizovi = (kvizViewModel.dajSveKvizove())
-                2 -> kvizAdapter.kvizovi = (kvizViewModel.dajUrađeneKvizove())
-                3 -> kvizAdapter.kvizovi = (kvizViewModel.dajBuduceKvizove())
-                4 -> kvizAdapter.kvizovi = (kvizViewModel.dajProsleKvizove())
+                0 -> (kvizViewModel.dajKvizoveZaKorisnika())
+                1 -> (kvizViewModel.dajSveKvizove())
+                2 -> (kvizViewModel.dajUrađeneKvizove())
+                3 -> (kvizViewModel.dajBuduceKvizove())
+                4 -> (kvizViewModel.dajProsleKvizove())
             }
-            kvizovi.adapter?.notifyDataSetChanged()
+            //kvizovi.adapter?.notifyDataSetChanged()
         }
 
         override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -55,7 +59,7 @@ class FragmentKvizovi : Fragment() {
 
         kvizovi = view.findViewById(R.id.listaKvizova)
         kvizovi.layoutManager = GridLayoutManager(activity,2);
-        kvizAdapter = KvizListAdapter(kvizViewModel.dajKvizoveZaKorisnika(),{kviz-> zapocniKviz(kviz)})
+        kvizAdapter = KvizListAdapter(listOf<Kviz>(),{kviz-> zapocniKviz(kviz)})
         kvizovi.adapter = kvizAdapter
         filter = view.findViewById(R.id.filterKvizova)
         filter.adapter = ArrayAdapter<String>(activity!!, android.R.layout.simple_list_item_1, listOf(
@@ -76,17 +80,24 @@ class FragmentKvizovi : Fragment() {
         menu?.selectedItemId =R.id.kvizovi
     }
     private fun zapocniKviz(kviz: Kviz){
-        if(kviz.datumPocetka.before(Calendar.getInstance().time)) {
+        if(kviz.datumPocetka?.before(Calendar.getInstance().time) == true) {
             (activity as MainActivity).promijeniMenu()
-            val pokusajViewModel = (activity as MainActivity).pokusajViewModel
+            val pokusajViewModel = PokusajViewModel(this@FragmentKvizovi::ucitajKviz)
+            Korisnik.pokusajViewModel=pokusajViewModel
             pokusajViewModel.aktivirajKviz(kviz)
-            val transakcija = (activity as MainActivity).supportFragmentManager.beginTransaction()
-            transakcija.replace(R.id.container, FragmentPokusaj.newInstance(PitanjeKvizRepository.getPitanja(kviz.naziv, kviz.nazivPredmeta)))
-            transakcija.addToBackStack(null)
-            transakcija.commit()
         }else{
             Toast.makeText(context as MainActivity,"Kviz još nije počeo",Toast.LENGTH_SHORT).show()
         }
+    }
+    fun ucitajKviz(listaPitanja:List<Pitanje>){
+        val transakcija = (activity as MainActivity).supportFragmentManager.beginTransaction()
+        transakcija.replace(R.id.container, FragmentPokusaj.newInstance(listaPitanja))
+        transakcija.addToBackStack(null)
+        transakcija.commit()
+    }
+    fun izmijeniKvizove(listaKvizova:List<Kviz>):Unit{
+        kvizAdapter.kvizovi=listaKvizova
+        kvizAdapter.notifyDataSetChanged()
     }
     companion object {
         fun newInstance() = FragmentKvizovi()
