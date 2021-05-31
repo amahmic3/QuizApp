@@ -16,7 +16,7 @@ class TakeKvizRepository {
 
         suspend fun zapocniKviz(idKviza: Int): KvizTaken? {
             return withContext(Dispatchers.IO){
-                val listaZapocetihKvizova = getPocetiKvizovi()?.filter { kvizTaken -> kvizTaken.kvizID==idKviza }
+                val listaZapocetihKvizova = getPocetiKvizovi()?.filter { kvizTaken -> kvizTaken.KvizId==idKviza }
                 if(listaZapocetihKvizova!=null && listaZapocetihKvizova.size>0) return@withContext listaZapocetihKvizova[0]
                 val url = URL(ApiConfig.baseURL + "/student/${AccountRepository.getHash()}/kviz/$idKviza")
                 (url.openConnection() as? HttpURLConnection)?.run {
@@ -38,7 +38,7 @@ class TakeKvizRepository {
                 (url.openConnection() as? HttpURLConnection)?.run {
                     val rezultat = this.inputStream.bufferedReader().use { it.readText() }
                     val jsonNiz=JSONArray(rezultat)
-                    if(jsonNiz.length()==0) return@withContext listOf<KvizTaken>()
+                    if(jsonNiz.length()==0) return@withContext null
                     listaZapocetihKvizova = mutableListOf()
                     for(i:Int in 0..jsonNiz.length()-1){
                         val jo = jsonNiz.getJSONObject(i)

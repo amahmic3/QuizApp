@@ -33,7 +33,7 @@ class PokusajViewModel(val ucitajKviz:((List<Pitanje>)->Unit)?) {
             brPitanja=listaPitanja.size
             kvizTaken = TakeKvizRepository.zapocniKviz(kviz.id)!!
 
-            val listaOdgovora = OdgovorRepository.getOdgovoriKviz(kvizTaken.id) as List<Odgovor>
+            val listaOdgovora = OdgovorRepository.getOdgovoriKviz(kvizTaken.KvizId) as List<Odgovor>
             for(odgovor in listaOdgovora){
                 for(pitanje in listaPitanja){
                     if(pitanje.id == odgovor.id){

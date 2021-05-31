@@ -1,12 +1,10 @@
 package ba.etf.rma21.projekat.data.repositories
 
-import ba.etf.rma21.projekat.Korisnik
 import ba.etf.rma21.projekat.data.models.KvizTaken
 import ba.etf.rma21.projekat.data.models.Odgovor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
-import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -16,7 +14,9 @@ class OdgovorRepository {
         suspend fun getOdgovoriKviz(idKviza: Int): List<Odgovor>? {
             return withContext(Dispatchers.IO){
                 val listaOdgovora = mutableListOf<Odgovor>()
-                val url = URL(ApiConfig.baseURL+"/student/${AccountRepository.getHash()}/kviztaken/$idKviza/odgovori")
+                val pocetiKviz = TakeKvizRepository.getPocetiKvizovi()?.first { kvizTaken -> kvizTaken.KvizId==idKviza }
+                if(pocetiKviz==null) return@withContext listaOdgovora
+                val url = URL(ApiConfig.baseURL+"/student/${AccountRepository.getHash()}/kviztaken/${pocetiKviz.id}/odgovori")
                 (url.openConnection() as? HttpURLConnection)?.run {
                     val rezultat = this.inputStream.bufferedReader().use { it.readText() }
                     val jsonNiz = JSONArray(rezultat)
@@ -34,7 +34,7 @@ class OdgovorRepository {
                 var povratna:Int =-1
                 val url = URL(ApiConfig.baseURL+"/student/${AccountRepository.getHash()}/kviztaken/$idKvizTaken/odgovor")
                 val kvizTaken:KvizTaken? = TakeKvizRepository.getPocetiKvizovi()?.first { kvizTaken ->  kvizTaken.id == idKvizTaken}
-                val pitanja = PitanjeKvizRepository.getPitanja(kvizTaken!!.kvizID)
+                val pitanja = PitanjeKvizRepository.getPitanja(kvizTaken!!.KvizId)
                 val postavljenoPitanje = pitanja.first { pitanje -> pitanje.id==idPitanje }
                 val osvojeniBodovi:Double = if(odgovor == postavljenoPitanje.tacan) kvizTaken.osvojeniBodovi+100F/pitanja.size else kvizTaken.osvojeniBodovi
                 povratna=osvojeniBodovi.toInt()
