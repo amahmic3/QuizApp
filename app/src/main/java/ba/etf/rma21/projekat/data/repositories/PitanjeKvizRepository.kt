@@ -10,28 +10,32 @@ import java.net.URL
 class PitanjeKvizRepository {
     companion object {
 
-        suspend fun getPitanja(idKviza: Int): List<Pitanje> {
+        suspend fun getPitanja(idKviza: Int): List<Pitanje>? {
            return withContext(Dispatchers.IO){
-               val url = URL(ApiConfig.baseURL+"/kviz/$idKviza/pitanja")
-               val listaPitanja = mutableListOf<Pitanje>()
-               (url.openConnection() as? HttpURLConnection)?.run {
-                    val rezultat = this.inputStream.bufferedReader().use { it.readText() }
-                   val jsonNiz = JSONArray(rezultat)
-                    for(i:Int in 0..jsonNiz.length()-1){
-                        val jo = jsonNiz.getJSONObject(i)
-                        val idPitanja = jo.getInt("id")
-                        val naziv = jo.getString("naziv")
-                        val tekstPitanja = jo.getString("tekstPitanja")
-                        val tacan = jo.getInt("tacan")
-                        val opcije= mutableListOf<String>()
-                        val jsonOpcije = jo.getJSONArray("opcije")
-                        for(j:Int in 0..jsonOpcije.length()-1){
-                            opcije.add(jsonOpcije.getString(j))
-                        }
-                        listaPitanja.add(Pitanje(idPitanja,naziv,tekstPitanja,opcije,tacan))
-                    }
+               try {
+                   val url = URL(ApiConfig.baseURL + "/kviz/$idKviza/pitanja")
+                   val listaPitanja = mutableListOf<Pitanje>()
+                   (url.openConnection() as? HttpURLConnection)?.run {
+                       val rezultat = this.inputStream.bufferedReader().use { it.readText() }
+                       val jsonNiz = JSONArray(rezultat)
+                       for (i: Int in 0..jsonNiz.length() - 1) {
+                           val jo = jsonNiz.getJSONObject(i)
+                           val idPitanja = jo.getInt("id")
+                           val naziv = jo.getString("naziv")
+                           val tekstPitanja = jo.getString("tekstPitanja")
+                           val tacan = jo.getInt("tacan")
+                           val opcije = mutableListOf<String>()
+                           val jsonOpcije = jo.getJSONArray("opcije")
+                           for (j: Int in 0..jsonOpcije.length() - 1) {
+                               opcije.add(jsonOpcije.getString(j))
+                           }
+                           listaPitanja.add(Pitanje(idPitanja, naziv, tekstPitanja, opcije, tacan))
+                       }
+                   }
+                   return@withContext listaPitanja
+               }catch (t:Throwable){
+                   return@withContext null
                }
-                return@withContext listaPitanja
             }
         }
     }

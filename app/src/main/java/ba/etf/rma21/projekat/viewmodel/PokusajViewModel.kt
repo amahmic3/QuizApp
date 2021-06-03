@@ -1,12 +1,10 @@
 package ba.etf.rma21.projekat.viewmodel
 
 import ba.etf.rma21.projekat.Korisnik
-import ba.etf.rma21.projekat.data.models.Kviz
-import ba.etf.rma21.projekat.data.models.KvizTaken
-import ba.etf.rma21.projekat.data.models.Odgovor
-import ba.etf.rma21.projekat.data.models.Pitanje
+import ba.etf.rma21.projekat.data.models.*
 import ba.etf.rma21.projekat.data.repositories.OdgovorRepository
 import ba.etf.rma21.projekat.data.repositories.PitanjeKvizRepository
+import ba.etf.rma21.projekat.data.repositories.PredmetIGrupaRepository
 import ba.etf.rma21.projekat.data.repositories.TakeKvizRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,12 +22,13 @@ class PokusajViewModel(val ucitajKviz:((List<Pitanje>)->Unit)?) {
     var brTacnih:Int=0
     fun aktivirajKviz(kviz: Kviz){
         scope.launch {
+
             aktivniKviz = kviz
             Korisnik.aktivirajKviz(kviz)
             kvizZavrsen = false
             if (aktivniKviz.osvojeniBodovi != null || aktivniKviz.datumKraj!!.before(Calendar.getInstance().time)) kvizZavrsen =
                 true
-            listaPitanja = PitanjeKvizRepository.getPitanja(kviz.id)
+            listaPitanja = PitanjeKvizRepository.getPitanja(kviz.id)!!
             brPitanja=listaPitanja.size
             kvizTaken = TakeKvizRepository.zapocniKviz(kviz.id)!!
 
