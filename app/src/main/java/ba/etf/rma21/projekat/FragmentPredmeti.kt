@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.Spinner
+import android.widget.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import ba.etf.rma21.projekat.data.models.Grupa
@@ -35,6 +32,7 @@ class FragmentPredmeti : Fragment() {
             position: Int,
             id: Long
         ) {
+            Toast.makeText(activity, "Učitavanje predmeta", Toast.LENGTH_LONG).show()
             if(spasiKorisnika) Korisnik.mapaVrijednosti["Godina"]=position
             if(!spasiKorisnika){
                 Korisnik.mapaVrijednosti["Predmet"]?.let { spinnerPredmeti.setSelection(it) }
@@ -52,6 +50,7 @@ class FragmentPredmeti : Fragment() {
             position: Int,
             id: Long
         ) {
+            Toast.makeText(activity, "Učitavanje grupa", Toast.LENGTH_LONG).show()
             if(spasiKorisnika) Korisnik.mapaVrijednosti["Predmet"]=position
             if(!spasiKorisnika){
                 Korisnik.mapaVrijednosti["Grupa"]?.let { spinnerGrupe.setSelection(it) }

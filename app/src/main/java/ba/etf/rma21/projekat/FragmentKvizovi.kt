@@ -37,7 +37,7 @@ class FragmentKvizovi : Fragment() {
         ) {
             kvizAdapter.kvizovi= listOf<Kviz>()
             kvizAdapter.notifyDataSetChanged()
-            Toast.makeText(activity, "Loading...", Toast.LENGTH_LONG).show()
+
             when (position) {
                 0 -> (kvizViewModel.dajKvizoveZaKorisnika())
                 1 -> (kvizViewModel.dajSveKvizove())
@@ -45,7 +45,7 @@ class FragmentKvizovi : Fragment() {
                 3 -> (kvizViewModel.dajBuduceKvizove())
                 4 -> (kvizViewModel.dajProsleKvizove())
             }
-
+            Toast.makeText(activity, "Loading...", Toast.LENGTH_LONG).show()
             //kvizovi.adapter?.notifyDataSetChanged()
         }
 
@@ -86,6 +86,7 @@ class FragmentKvizovi : Fragment() {
             (activity as MainActivity).promijeniMenu()
             val pokusajViewModel = PokusajViewModel(this@FragmentKvizovi::ucitajKviz)
             Korisnik.pokusajViewModel=pokusajViewModel
+            Toast.makeText(activity, "Loading...", Toast.LENGTH_LONG).show()
             pokusajViewModel.aktivirajKviz(kviz)
         }else{
             Toast.makeText(context as MainActivity,"Kviz još nije počeo",Toast.LENGTH_SHORT).show()
