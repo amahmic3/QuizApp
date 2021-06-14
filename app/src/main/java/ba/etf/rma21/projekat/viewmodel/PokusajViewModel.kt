@@ -21,7 +21,6 @@ class PokusajViewModel(val ucitajKviz:((List<Pitanje>)->Unit)?) {
     lateinit var kvizTaken: KvizTaken
     lateinit var listaPitanja:List<Pitanje>
     var brTacnih:Int=0
-    var brOdgovorenih = 0
     private lateinit var context: Context
     fun setContext(_context: Context){
         context=_context
@@ -44,7 +43,6 @@ class PokusajViewModel(val ucitajKviz:((List<Pitanje>)->Unit)?) {
             brPitanja=listaPitanja.size
             kvizTaken = TakeKvizRepository.zapocniKviz(kviz.id)!!
             brTacnih=pitanjaDao.dajBrTacnihNaKvizu(aktivniKviz.id)
-            brOdgovorenih = odgovoriDao.dajBrOdgovorenih(aktivniKviz.id)
             for(odgovor in listaOdgovora){
                 for(pitanje in listaPitanja){
                     if(pitanje.id == odgovor.idPitanja){
@@ -69,11 +67,9 @@ class PokusajViewModel(val ucitajKviz:((List<Pitanje>)->Unit)?) {
     fun postaviOdgovor(pitanje: Pitanje,odgovor:Int){
         Korisnik.aktivnaPitanja!![pitanje]=odgovor
         brTacnih += if(pitanje.tacan == odgovor) 1 else 0
-        brOdgovorenih++
         CoroutineScope(Job()).launch {
             OdgovorRepository.postaviOdgovorKviz(kvizTaken.id,pitanje.id,odgovor)
         }
-        if(brOdgovorenih==listaPitanja.size) predajKviz()
     }
     fun dajBrTacnih():Int{
         return brTacnih

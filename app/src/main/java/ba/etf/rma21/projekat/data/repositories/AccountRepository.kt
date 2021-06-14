@@ -33,10 +33,10 @@ class AccountRepository(var acHash:String) {
                             dao.dodajAccount(Account(acHash, Datum.dajTrenutniDatum()))
                             DBRepository.forceUpdate()
                         }
-                    return@withContext true
-                    }catch (t:Throwable){
-                    return@withContext false
-                        }
+                        return@withContext true
+                    } catch (t:Throwable){
+                        return@withContext false
+                    }
                 }
 
         }

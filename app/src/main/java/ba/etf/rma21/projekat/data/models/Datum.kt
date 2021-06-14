@@ -23,7 +23,7 @@ class Datum {
             return format.format(Calendar.getInstance().time)
         }
         fun dajDatumBezVremena():String{
-            val format =SimpleDateFormat("yyyy-MM-dd",Locale.getDefault())
+            val format =SimpleDateFormat("yyyy-MM-dd")
             return format.format(Calendar.getInstance().time)
         }
         fun after(datum1:String,datum2:String):Boolean{
