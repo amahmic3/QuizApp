@@ -74,8 +74,7 @@ class OdgovorRepository {
                     val odgovorDao = db.odgovorDao()
                     val odgovori = odgovorDao.dajOdgovoreZaKviz(idKviz)
                     for(odgovor in odgovori){
-                        if(odgovor.odgovoreno==null) odgovor.odgovoreno = -1
-                        posaljiOdgovor(kvizTaken!!.id,odgovor.idPitanja,odgovor.odgovoreno!!)
+                        posaljiOdgovor(kvizTaken!!.id,odgovor.idPitanja,odgovor.odgovoreno)
                     }
                 }catch(t:Throwable){
 

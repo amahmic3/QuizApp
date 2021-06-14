@@ -72,8 +72,8 @@ class PokusajViewModel(val ucitajKviz:((List<Pitanje>)->Unit)?) {
         brOdgovorenih++
         CoroutineScope(Job()).launch {
             OdgovorRepository.postaviOdgovorKviz(kvizTaken.id,pitanje.id,odgovor)
-            if(brOdgovorenih==listaPitanja.size) OdgovorRepository.predajOdgovore(aktivniKviz.id)
         }
+        if(brOdgovorenih==listaPitanja.size) predajKviz()
     }
     fun dajBrTacnih():Int{
         return brTacnih
@@ -96,7 +96,9 @@ class PokusajViewModel(val ucitajKviz:((List<Pitanje>)->Unit)?) {
             }
         }
         aktivniKviz.predan=true
+
         CoroutineScope(Job()).launch{
+            AppDatabase.getInstance(context).kvizDao().azurirajKviz(aktivniKviz)
             OdgovorRepository.predajOdgovore(aktivniKviz.id)
         }
         return dajPoruku(brTacnih)

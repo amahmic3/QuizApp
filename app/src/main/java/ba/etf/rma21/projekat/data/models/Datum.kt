@@ -19,7 +19,7 @@ class Datum {
             return String.format("%02d.%02d.%d.", datum.get(Calendar.DAY_OF_MONTH), datum.get(Calendar.MONTH)+1, datum.get(Calendar.YEAR))
         }
         fun dajTrenutniDatum():String{
-            val format =SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss",Locale.getDefault())
+            val format =SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
             return format.format(Calendar.getInstance().time)
         }
         fun dajDatumBezVremena():String{
