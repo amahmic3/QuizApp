@@ -1,6 +1,7 @@
 package ba.etf.rma21.projekat.data.repositories
 
 
+import android.content.Context
 import ba.etf.rma21.projekat.data.models.Grupa
 import ba.etf.rma21.projekat.data.models.Predmet
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +14,10 @@ import java.net.URL
 
 class PredmetIGrupaRepository {
     companion object{
-
+        private lateinit var context: Context
+        fun setContext(_context: Context){
+            context=_context
+        }
         suspend fun getPredmeti():List<Predmet>? {
             return withContext(Dispatchers.IO){
                 val listaPredmeta = mutableListOf<Predmet>()
@@ -31,6 +35,22 @@ class PredmetIGrupaRepository {
                 }
 
                 return@withContext listaPredmeta
+            }
+        }
+        suspend fun getPredmetByID(idPredmet:Int):Predmet?{
+            return withContext(Dispatchers.IO){
+                val listaPredmeta = mutableListOf<Predmet>()
+                val url = URL(ApiConfig.baseURL+"/predmet/$idPredmet")
+                var predmet:Predmet? = null
+                (url.openConnection() as? HttpURLConnection)?.run {
+                    val rezultat = this.inputStream.bufferedReader().use { it.readText() }
+                    val jsonObject = JSONObject(rezultat)
+                    val id = jsonObject.getInt("id")
+                    val naziv = jsonObject.getString("naziv")
+                    val godina = jsonObject.getInt("godina")
+                    predmet=Predmet(id, naziv, godina)
+                }
+                return@withContext predmet
             }
         }
        suspend fun dajNazivPredmetaZaID(id:Int):String{
@@ -64,7 +84,16 @@ class PredmetIGrupaRepository {
                 return@withContext listaGrupa
             }
         }
-
+        suspend fun dajUpisanePredmete():List<Predmet>?{
+            return  withContext(Dispatchers.IO){
+                val upisaneGrupe = getUpisaneGrupe()
+                val hashset = HashSet<Predmet>()
+                for(grupa in upisaneGrupe!!){
+                    hashset.add(getPredmetByID(grupa.idPredmeta)!!)
+                }
+                return@withContext hashset.toList()
+            }
+        }
         suspend fun getGrupeZaPredmet(idPredmeta:Int):List<Grupa>?{
 
             return getGrupe()?.filter { g->g.idPredmeta==idPredmeta }

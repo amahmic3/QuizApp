@@ -1,16 +1,17 @@
 package ba.etf.rma21.projekat.viewmodel
 
+import android.content.Context
 import ba.etf.rma21.projekat.Korisnik
+import ba.etf.rma21.projekat.data.AppDatabase
 import ba.etf.rma21.projekat.data.models.*
+import ba.etf.rma21.projekat.data.repositories.DBRepository
 import ba.etf.rma21.projekat.data.repositories.OdgovorRepository
 import ba.etf.rma21.projekat.data.repositories.PitanjeKvizRepository
-import ba.etf.rma21.projekat.data.repositories.PredmetIGrupaRepository
 import ba.etf.rma21.projekat.data.repositories.TakeKvizRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.util.*
 
 class PokusajViewModel(val ucitajKviz:((List<Pitanje>)->Unit)?) {
     lateinit var aktivniKviz:Kviz
@@ -20,24 +21,34 @@ class PokusajViewModel(val ucitajKviz:((List<Pitanje>)->Unit)?) {
     lateinit var kvizTaken: KvizTaken
     lateinit var listaPitanja:List<Pitanje>
     var brTacnih:Int=0
+    var brOdgovorenih = 0
+    private lateinit var context: Context
+    fun setContext(_context: Context){
+        context=_context
+    }
     fun aktivirajKviz(kviz: Kviz){
         scope.launch {
-
+            DBRepository.updateNow()
             aktivniKviz = kviz
             Korisnik.aktivirajKviz(kviz)
             kvizZavrsen = false
-            if (aktivniKviz.osvojeniBodovi != null || aktivniKviz.datumKraj!!.before(Calendar.getInstance().time)) kvizZavrsen =
+            if (aktivniKviz.osvojeniBodovi != null || Datum.before(aktivniKviz.datumKraj!!,Datum.dajDatumBezVremena())) kvizZavrsen =
                 true
-            listaPitanja = PitanjeKvizRepository.getPitanja(kviz.id)!!
+            val db = AppDatabase.getInstance(context)
+            val odgovoriDao = db.odgovorDao()
+            val pitanjaDao = db.pitanjeDao()
+            val listaOdgovora = odgovoriDao.dajOdgovoreZaKviz(kviz.id)
+            listaPitanja = pitanjaDao.dajPitanjaZaKviz(aktivniKviz.id)
+
+
             brPitanja=listaPitanja.size
             kvizTaken = TakeKvizRepository.zapocniKviz(kviz.id)!!
-
-            val listaOdgovora = OdgovorRepository.getOdgovoriKviz(kvizTaken.KvizId) as List<Odgovor>
+            brTacnih=pitanjaDao.dajBrTacnihNaKvizu(aktivniKviz.id)
+            brOdgovorenih = odgovoriDao.dajBrOdgovorenih(aktivniKviz.id)
             for(odgovor in listaOdgovora){
                 for(pitanje in listaPitanja){
-                    if(pitanje.id == odgovor.id){
+                    if(pitanje.id == odgovor.idPitanja){
                         Korisnik.aktivnaPitanja!![pitanje] = odgovor.odgovoreno
-                        brTacnih+=if(pitanje.tacan==odgovor.odgovoreno) 1 else 0
                         break
                     }
                 }
@@ -58,8 +69,10 @@ class PokusajViewModel(val ucitajKviz:((List<Pitanje>)->Unit)?) {
     fun postaviOdgovor(pitanje: Pitanje,odgovor:Int){
         Korisnik.aktivnaPitanja!![pitanje]=odgovor
         brTacnih += if(pitanje.tacan == odgovor) 1 else 0
+        brOdgovorenih++
         CoroutineScope(Job()).launch {
             OdgovorRepository.postaviOdgovorKviz(kvizTaken.id,pitanje.id,odgovor)
+            if(brOdgovorenih==listaPitanja.size) OdgovorRepository.predajOdgovore(aktivniKviz.id)
         }
     }
     fun dajBrTacnih():Int{
@@ -71,8 +84,8 @@ class PokusajViewModel(val ucitajKviz:((List<Pitanje>)->Unit)?) {
     }
     fun predajKviz():String{
         val brTacnih = dajBrTacnih()
-        if(aktivniKviz.datumKraj!!.after(Calendar.getInstance().time)) {
-            aktivniKviz.datumRada = Calendar.getInstance().time
+        if(Datum.after(aktivniKviz.datumKraj!!,Datum.dajDatumBezVremena())) {
+            aktivniKviz.datumRada = Datum.dajDatumBezVremena()
             if(brPitanja!=0) {
                 aktivniKviz.osvojeniBodovi = brTacnih * 100F / brPitanja
             }else aktivniKviz.osvojeniBodovi=0F
@@ -81,6 +94,10 @@ class PokusajViewModel(val ucitajKviz:((List<Pitanje>)->Unit)?) {
             if(!Korisnik.aktivnaPitanja!!.containsKey(pitanje)){
                 postaviOdgovor(pitanje,-1)
             }
+        }
+        aktivniKviz.predan=true
+        CoroutineScope(Job()).launch{
+            OdgovorRepository.predajOdgovore(aktivniKviz.id)
         }
         return dajPoruku(brTacnih)
     }

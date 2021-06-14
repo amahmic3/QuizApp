@@ -1,17 +1,16 @@
 package ba.etf.rma21.projekat.data.models
 
-import java.util.*
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-data class Kviz(val id:Int,
-    val naziv: String, val naziviPredmeta: List<String>, val datumPocetka: Date?, val datumKraj: Date?,
-    var datumRada: Date?, val trajanje: Int, var osvojeniBodovi: Float?
+@Entity
+data class Kviz(@PrimaryKey val id:Int,
+                val naziv: String, val naziviPredmeta: String, val datumPocetka: String?, val datumKraj: String?,
+                var datumRada: String?, val trajanje: Int, var osvojeniBodovi: Float?, var predan:Boolean=false
 ) {
     private fun nazivPredmeta():String{
-        var naziv=""
-        naziviPredmeta.forEach {
-            naziv+=it
-        }
-        return naziv
+
+        return naziviPredmeta
     }
     override fun hashCode(): Int {
         return (naziv+nazivPredmeta()).hashCode()

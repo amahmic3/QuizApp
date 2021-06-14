@@ -11,14 +11,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ba.etf.rma21.projekat.data.models.Datum
 import ba.etf.rma21.projekat.data.models.Kviz
 import ba.etf.rma21.projekat.data.models.Pitanje
-import ba.etf.rma21.projekat.data.repositories.PitanjeKvizRepository
 import ba.etf.rma21.projekat.view.KvizListAdapter
-import ba.etf.rma21.projekat.viewmodel.GrupaViewModel
 import ba.etf.rma21.projekat.viewmodel.KvizViewModel
 import ba.etf.rma21.projekat.viewmodel.PokusajViewModel
-import ba.etf.rma21.projekat.viewmodel.PredmetViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*
 
@@ -72,6 +70,7 @@ class FragmentKvizovi : Fragment() {
                 "Prošli kvizovi"
             ))
         filter.onItemSelectedListener = onFilterChanged
+        context?.let { kvizViewModel.setContext(it) }
 
         return view
     }
@@ -82,9 +81,10 @@ class FragmentKvizovi : Fragment() {
         menu?.selectedItemId =R.id.kvizovi
     }
     private fun zapocniKviz(kviz: Kviz){
-        if(kviz.datumPocetka?.before(Calendar.getInstance().time) == true) {
+        if(Datum.before(kviz.datumPocetka!!,Datum.dajDatumBezVremena())) {
             (activity as MainActivity).promijeniMenu()
             val pokusajViewModel = PokusajViewModel(this@FragmentKvizovi::ucitajKviz)
+            context?.let { pokusajViewModel.setContext(it) }
             Korisnik.pokusajViewModel=pokusajViewModel
             Toast.makeText(activity, "Loading...", Toast.LENGTH_LONG).show()
             pokusajViewModel.aktivirajKviz(kviz)

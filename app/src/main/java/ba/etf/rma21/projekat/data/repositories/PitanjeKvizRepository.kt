@@ -24,12 +24,13 @@ class PitanjeKvizRepository {
                            val naziv = jo.getString("naziv")
                            val tekstPitanja = jo.getString("tekstPitanja")
                            val tacan = jo.getInt("tacan")
-                           val opcije = mutableListOf<String>()
+                           var opcije: String= ""
                            val jsonOpcije = jo.getJSONArray("opcije")
                            for (j: Int in 0..jsonOpcije.length() - 1) {
-                               opcije.add(jsonOpcije.getString(j))
+                               opcije+=(jsonOpcije.getString(j))+','
                            }
-                           listaPitanja.add(Pitanje(idPitanja, naziv, tekstPitanja, opcije, tacan))
+
+                           listaPitanja.add(Pitanje(idPitanja, naziv, tekstPitanja, opcije.removeSuffix(","), tacan))
                        }
                    }
                    return@withContext listaPitanja

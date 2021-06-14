@@ -14,15 +14,15 @@ import java.util.*
 
 @Suppress("DEPRECATION")
 class KvizListAdapter(var kvizovi: List<Kviz>, private val onItemClicked: (kviz:Kviz) -> Unit):RecyclerView.Adapter<KvizListAdapter.KvizViewHolder>() {
-    private lateinit var trenutniDatum :Date;
+    private lateinit var trenutniDatum :Date
 
     inner class KvizViewHolder(itemView:View):RecyclerView.ViewHolder(itemView) {
-        val nazivKviza:TextView = itemView.findViewById(R.id.nazivKviza);
-        val nazivPredmeta:TextView = itemView.findViewById(R.id.nazivPredmeta);
-        val datum:TextView = itemView.findViewById(R.id.datumKviza);
+        val nazivKviza:TextView = itemView.findViewById(R.id.nazivKviza)
+        val nazivPredmeta:TextView = itemView.findViewById(R.id.nazivPredmeta)
+        val datum:TextView = itemView.findViewById(R.id.datumKviza)
         val trajanjeKviza:TextView = itemView.findViewById(R.id.trajanjeKviza)
-        val brojOsvojenihPoena:TextView = itemView.findViewById(R.id.brojOsvojenihPoena);
-        val stanjeKviza:ImageView = itemView.findViewById(R.id.stanjeKviza);
+        val brojOsvojenihPoena:TextView = itemView.findViewById(R.id.brojOsvojenihPoena)
+        val stanjeKviza:ImageView = itemView.findViewById(R.id.stanjeKviza)
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KvizViewHolder {
         val view = LayoutInflater
@@ -32,39 +32,34 @@ class KvizListAdapter(var kvizovi: List<Kviz>, private val onItemClicked: (kviz:
     }
 
     override fun getItemCount(): Int {
-        return kvizovi.size;
+        return kvizovi.size
     }
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: KvizViewHolder, position: Int) {
-        trenutniDatum = Date();
-        var naziviPredmeta = ""
-        kvizovi[position].naziviPredmeta.forEach {
-            naziviPredmeta+=it
-            naziviPredmeta+=" "
-        }
-        holder.nazivPredmeta.text = naziviPredmeta;
-        holder.nazivKviza.text = kvizovi[position].naziv;
-        holder.trajanjeKviza.text = kvizovi[position].trajanje.toString()+" min";
+        trenutniDatum = Date()
+        holder.nazivPredmeta.text = kvizovi[position].naziviPredmeta
+        holder.nazivKviza.text = kvizovi[position].naziv
+        holder.trajanjeKviza.text = kvizovi[position].trajanje.toString()+" min"
         holder.itemView.setOnClickListener {
             onItemClicked(kvizovi[position])
         }
-        if(kvizovi[position].osvojeniBodovi==null && kvizovi[position].datumKraj!!.before(trenutniDatum)){
-            holder.stanjeKviza.setImageResource(R.drawable.crvena);
-            holder.brojOsvojenihPoena.text ="";
-            holder.datum.text = Datum.dajFormatiranDatum(kvizovi[position].datumKraj!!)
+        if(kvizovi[position].osvojeniBodovi==null && Datum.before(kvizovi[position].datumKraj!!,Datum.dajDatumBezVremena())){
+            holder.stanjeKviza.setImageResource(R.drawable.crvena)
+            holder.brojOsvojenihPoena.text =""
+            holder.datum.text = kvizovi[position].datumKraj!!
         }else if(kvizovi[position].osvojeniBodovi!=null){
-            holder.stanjeKviza.setImageResource(R.drawable.plava);
-            holder.brojOsvojenihPoena.text = kvizovi[position].osvojeniBodovi.toString();
-            holder.datum.text =Datum.dajFormatiranDatum(kvizovi[position].datumRada!!)
-        }else if(kvizovi[position].datumPocetka!!.after(trenutniDatum)){
-            holder.stanjeKviza.setImageResource(R.drawable.zuta);
-            holder.brojOsvojenihPoena.text ="";
-            holder.datum.text =Datum.dajFormatiranDatum(kvizovi[position].datumPocetka!!)
+            holder.stanjeKviza.setImageResource(R.drawable.plava)
+            holder.brojOsvojenihPoena.text = kvizovi[position].osvojeniBodovi.toString()
+            holder.datum.text =kvizovi[position].datumRada!!
+        }else if(Datum.after(kvizovi[position].datumPocetka!!,Datum.dajDatumBezVremena())){
+            holder.stanjeKviza.setImageResource(R.drawable.zuta)
+            holder.brojOsvojenihPoena.text =""
+            holder.datum.text =kvizovi[position].datumPocetka!!
         }else{
-            holder.stanjeKviza.setImageResource(R.drawable.zelena);
-            holder.brojOsvojenihPoena.text ="";
-            holder.datum.text = Datum.dajFormatiranDatum(kvizovi[position].datumKraj!!)
+            holder.stanjeKviza.setImageResource(R.drawable.zelena)
+            holder.brojOsvojenihPoena.text =""
+            holder.datum.text = kvizovi[position].datumKraj!!
         }
 
     }

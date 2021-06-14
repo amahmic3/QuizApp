@@ -55,7 +55,7 @@ class FragmentPitanje(val pitanje:Pitanje) : Fragment() {
         val tekstPolje = view.findViewById<TextView>(R.id.tekstPitanja)
         tekstPolje.text = pitanje.tekstPitanja
         odgovori= view.findViewById(R.id.odgovoriLista)
-        odgovori.adapter = object : ArrayAdapter<String>(activity as MainActivity,R.layout.item_odgovor,pitanje.opcije){
+        odgovori.adapter = object : ArrayAdapter<String>(activity as MainActivity,R.layout.item_odgovor,pitanje.opcije.split(",")){
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val pogled = super.getView(position, convertView, parent)
                 if(pokusajViewModel.daLiJeOdgovorio(pitanje)){

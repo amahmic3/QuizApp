@@ -1,13 +1,19 @@
 package ba.etf.rma21.projekat
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
 import androidx.core.view.iterator
 import androidx.fragment.app.Fragment
-import ba.etf.rma21.projekat.viewmodel.PokusajViewModel
+import ba.etf.rma21.projekat.data.repositories.AccountRepository
+import ba.etf.rma21.projekat.data.repositories.DBRepository
+import ba.etf.rma21.projekat.data.repositories.OdgovorRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -71,13 +77,31 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.selectedItemId = R.id.kvizovi
         bottomNavigation.menu[2].isVisible=false
         bottomNavigation.menu[3].isVisible=false
+        AccountRepository.setContext(_context = applicationContext)
+        DBRepository.setContext(applicationContext)
+        OdgovorRepository.setContext(applicationContext)
+
+        obradiIntent(intent)
+
     }
 
     override fun onResume() {
         super.onResume()
         bottomNavigation.selectedItemId = R.id.kvizovi
   }
+    fun obradiIntent(intent: Intent){
+        val hash: String? = intent.getStringExtra("payload")
 
+        if(hash!=null){
+            CoroutineScope(Job()).launch {
+                AccountRepository.postaviHash(hash)
+            }
+        }else{
+            CoroutineScope(Job()).launch {
+                AccountRepository.postaviHash(AccountRepository.getHash())
+            }
+        }
+    }
 
 }
 

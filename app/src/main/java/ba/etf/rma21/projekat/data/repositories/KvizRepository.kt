@@ -28,14 +28,14 @@ class KvizRepository {
         suspend fun getFuture(): List<Kviz> {
            return withContext(Dispatchers.IO) {
                 val mojiKvizovi = getUpisani()
-                return@withContext mojiKvizovi?.filter { kviz -> kviz.osvojeniBodovi==null && kviz.datumKraj!!.after(Calendar.getInstance().time) }!!
+                return@withContext mojiKvizovi?.filter { kviz -> kviz.osvojeniBodovi==null && Datum.after(kviz.datumKraj!!,Datum.dajDatumBezVremena())}!!
             }
         }
 
         suspend fun getNotTaken(): List<Kviz> {
            return withContext(Dispatchers.IO) {
                 val mojiKvizovi = getUpisani()
-                return@withContext mojiKvizovi?.filter { kviz -> kviz.osvojeniBodovi==null && kviz.datumKraj!!.before(Calendar.getInstance().time)}!!
+                return@withContext mojiKvizovi?.filter { kviz -> kviz.osvojeniBodovi==null && Datum.before(kviz.datumKraj!!,Datum.dajDatumBezVremena())}!!
             }
         }
 
@@ -85,7 +85,7 @@ class KvizRepository {
             }
         }
         private suspend fun sklepajObjekat(jo:JSONObject,kt:KvizTaken?=null):Kviz{
-            var datumRada:Date? = null
+            var datumRada:String? = null
             var osvojeniBodovi:Float? = null
             val idKviza = jo.getInt("id")
             if(kt!=null){
@@ -110,9 +110,13 @@ class KvizRepository {
                     listaPredmeta.add(PredmetIGrupaRepository.dajNazivPredmetaZaID(grupa.getInt("PredmetId")))
                 }
             }
-            val datumP:Date? = if(datumPocetka=="null") null else SimpleDateFormat("yyyy-MM-dd").parse(datumPocetka)
-            val datumK:Date? = if(datumKraja.toString()=="null") Datum.dajDatum(2050,1,2) else SimpleDateFormat("yyyy-MM-dd").parse(datumKraja.toString())
-            return Kviz(idKviza,nazivKviza,listaPredmeta.toList(),datumP,datumK,datumRada,trajanje,osvojeniBodovi)
+            var naziviPredmeta:String= ""
+            for(predmet in listaPredmeta){
+                naziviPredmeta+= "$predmet "
+            }
+            val datumK:String = if(datumKraja.toString()=="null") "2025-6-15" else datumKraja.toString()
+            val gotov = datumRada!=null
+            return Kviz(idKviza,nazivKviza,naziviPredmeta,datumPocetka,datumK,datumRada,trajanje,osvojeniBodovi,gotov)
         }
         suspend fun getUpisani(): List<Kviz>? {
            return withContext(Dispatchers.IO){

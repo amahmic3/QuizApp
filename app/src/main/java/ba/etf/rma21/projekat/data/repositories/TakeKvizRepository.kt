@@ -28,7 +28,7 @@ class TakeKvizRepository {
                         val jo = JSONObject(rezultat)
                         if (jo.length() < 2) return@withContext null
                         val datumRada =
-                            SimpleDateFormat("yyyy-MM-dd").parse(jo.getString("datumRada")) as Date
+                            jo.getString("datumRada")
                         val osvojeniBodovi: Float = jo.get("osvojeniBodovi").toString().toFloat()
                         return@withContext KvizTaken(
                             jo.getInt("id"),
@@ -58,8 +58,8 @@ class TakeKvizRepository {
                        listaZapocetihKvizova = mutableListOf()
                        for (i: Int in 0..jsonNiz.length() - 1) {
                            val jo = jsonNiz.getJSONObject(i)
-                           val datum: Date =
-                               SimpleDateFormat("yyyy-MM-dd").parse(jo.getString("datumRada")) as Date
+                           val datum =
+                               jo.getString("datumRada")
                            val osvojeniBodovi: Float = jo.get("osvojeniBodovi").toString().toFloat()
                            listaZapocetihKvizova.add(
                                KvizTaken(
