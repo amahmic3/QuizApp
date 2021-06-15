@@ -1,11 +1,9 @@
 package ba.etf.rma21.projekat.viewmodel
 
 import android.content.Context
-import android.content.Intent
 import ba.etf.rma21.projekat.data.AppDatabase
 import ba.etf.rma21.projekat.data.models.Datum
 import ba.etf.rma21.projekat.data.models.Kviz
-import ba.etf.rma21.projekat.data.repositories.AccountRepository
 import ba.etf.rma21.projekat.data.repositories.DBRepository
 import ba.etf.rma21.projekat.data.repositories.KvizRepository
 import kotlinx.coroutines.CoroutineScope

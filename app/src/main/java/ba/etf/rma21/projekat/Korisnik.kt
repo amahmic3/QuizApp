@@ -1,6 +1,9 @@
 package ba.etf.rma21.projekat
 
-import ba.etf.rma21.projekat.data.models.*
+import ba.etf.rma21.projekat.data.models.Grupa
+import ba.etf.rma21.projekat.data.models.Kviz
+import ba.etf.rma21.projekat.data.models.Pitanje
+import ba.etf.rma21.projekat.data.models.Predmet
 import ba.etf.rma21.projekat.viewmodel.PokusajViewModel
 
 object Korisnik {

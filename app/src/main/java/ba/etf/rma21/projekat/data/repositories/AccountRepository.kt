@@ -6,9 +6,6 @@ import ba.etf.rma21.projekat.data.models.Account
 import ba.etf.rma21.projekat.data.models.Datum
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
-import java.net.HttpURLConnection
-import java.net.URL
 import java.util.*
 
 class AccountRepository(var acHash:String) {

@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import ba.etf.rma21.projekat.data.models.Grupa
 
 
 class FragmentPoruka(private var poruka:String) : Fragment() {

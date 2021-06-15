@@ -11,9 +11,6 @@ import ba.etf.rma21.projekat.data.models.Grupa
 import ba.etf.rma21.projekat.data.models.Predmet
 import ba.etf.rma21.projekat.viewmodel.GrupaViewModel
 import ba.etf.rma21.projekat.viewmodel.PredmetViewModel
-import kotlin.collections.List
-import kotlin.collections.listOf
-import kotlin.collections.map
 import kotlin.collections.set
 
 
