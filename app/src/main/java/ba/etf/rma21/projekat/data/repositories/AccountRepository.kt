@@ -24,9 +24,11 @@ class AccountRepository(var acHash:String) {
                         val dao = AppDatabase.getInstance(context).accountDao()
                         if(dao.getCount()==0){
                             dao.dodajAccount(Account(acHash, Datum.dajTrenutniDatum()))
+                            AppDatabase.getInstance(context).odgovorDao().obrisiSveOdgovore()
                             DBRepository.forceUpdate()
                         }else if(dao.imaLiAccounta(acHash)==0){
                             dao.obrisiSve()
+                            AppDatabase.getInstance(context).odgovorDao().obrisiSveOdgovore()
                             dao.dodajAccount(Account(acHash, Datum.dajTrenutniDatum()))
                             DBRepository.forceUpdate()
                         }

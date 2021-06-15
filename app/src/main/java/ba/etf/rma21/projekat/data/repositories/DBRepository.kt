@@ -39,12 +39,12 @@ class DBRepository {
         }
         suspend fun cistka(){
             val predmetDao = AppDatabase.getInstance(context).predmetDao()
-            val odgovorDao = AppDatabase.getInstance(context).odgovorDao()
+           // val odgovorDao = AppDatabase.getInstance(context).odgovorDao()
             val grupaDao= AppDatabase.getInstance(context).grupaDao()
             val kvizDao = AppDatabase.getInstance(context).kvizDao()
             val pitanjaDao = AppDatabase.getInstance(context).pitanjeDao()
             val pitanjeKvizDao = AppDatabase.getInstance(context).pitanjeKvizDao()
-            odgovorDao.obrisiSveOdgovore()
+           // odgovorDao.obrisiSveOdgovore()
             grupaDao.obrisiSveGrupe()
             predmetDao.obrisiSve()
             kvizDao.obrisiSveKvizove()
@@ -71,7 +71,7 @@ class DBRepository {
             for(kviz in kvizovi){
                 val odgovoriNaKviz = OdgovorRepository.getOdgovoriKviz(kviz.id)!!
                 for(odgovor in odgovoriNaKviz){
-                    odgovorDao.dodajOdgovor(odgovor)
+                   if(odgovorDao.daLiJeOdgovoreno(odgovor.idKviza,odgovor.idPitanja)==0) odgovorDao.dodajOdgovor(odgovor)
                 }
             }
 
