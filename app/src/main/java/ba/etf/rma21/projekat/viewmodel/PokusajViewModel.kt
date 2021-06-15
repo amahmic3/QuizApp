@@ -3,10 +3,12 @@ package ba.etf.rma21.projekat.viewmodel
 import android.content.Context
 import ba.etf.rma21.projekat.Korisnik
 import ba.etf.rma21.projekat.data.AppDatabase
-import ba.etf.rma21.projekat.data.models.*
+import ba.etf.rma21.projekat.data.models.Datum
+import ba.etf.rma21.projekat.data.models.Kviz
+import ba.etf.rma21.projekat.data.models.KvizTaken
+import ba.etf.rma21.projekat.data.models.Pitanje
 import ba.etf.rma21.projekat.data.repositories.DBRepository
 import ba.etf.rma21.projekat.data.repositories.OdgovorRepository
-import ba.etf.rma21.projekat.data.repositories.PitanjeKvizRepository
 import ba.etf.rma21.projekat.data.repositories.TakeKvizRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -91,11 +93,13 @@ class PokusajViewModel(val ucitajKviz:((List<Pitanje>)->Unit)?) {
                 postaviOdgovor(pitanje,-1)
             }
         }
-        aktivniKviz.predan=true
-
         CoroutineScope(Job()).launch{
-            AppDatabase.getInstance(context).kvizDao().azurirajKviz(aktivniKviz)
-            OdgovorRepository.predajOdgovore(aktivniKviz.id)
+            if(!aktivniKviz.predan) {
+                aktivniKviz.predan=true
+                AppDatabase.getInstance(context).kvizDao().azurirajKviz(aktivniKviz)
+                OdgovorRepository.predajOdgovore(aktivniKviz.id)
+
+            }
         }
         return dajPoruku(brTacnih)
     }
